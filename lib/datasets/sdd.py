@@ -21,18 +21,14 @@ from fast_rcnn.config import cfg
 
 class sdd(imdb):
     def __init__(self, image_set, devkit_path=None):
-        imdb.__init__(self, 'voc_' + year + '_' + image_set)
-        self._year = year
+        imdb.__init__(self, 'sdd_' + image_set)
         self._image_set = image_set
         self._devkit_path = self._get_default_path() if devkit_path is None \
                             else devkit_path
-        self._data_path = os.path.join(self._devkit_path, 'VOC' + self._year)
-        self._classes = ('__background__', # always index 0
-                         'aeroplane', 'bicycle', 'bird', 'boat',
-                         'bottle', 'bus', 'car', 'cat', 'chair',
-                         'cow', 'diningtable', 'dog', 'horse',
-                         'motorbike', 'person', 'pottedplant',
-                         'sheep', 'sofa', 'train', 'tvmonitor')
+        self._data_path = os.path.join(self._devkit_path)
+        self._classes = ('__background__',  # always index 0
+                         'pedestrian', 'biker', 'skater', 'car',
+                         'bus', 'cart')
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
         self._image_ext = '.jpg'
         self._image_index = self._load_image_set_index()
@@ -50,7 +46,7 @@ class sdd(imdb):
                        'min_size'    : 2}
 
         assert os.path.exists(self._devkit_path), \
-                'VOCdevkit path does not exist: {}'.format(self._devkit_path)
+                'Devkit path does not exist: {}'.format(self._devkit_path)
         assert os.path.exists(self._data_path), \
                 'Path does not exist: {}'.format(self._data_path)
 
@@ -88,7 +84,7 @@ class sdd(imdb):
         """
         Return the default path where PASCAL VOC is expected to be installed.
         """
-        return os.path.join(cfg.DATA_DIR, 'VOCdevkit' + self._year)
+        return os.path.join(cfg.DATA_DIR, 'sdd')
 
     def gt_roidb(self):
         """
@@ -127,7 +123,7 @@ class sdd(imdb):
             print '{} ss roidb loaded from {}'.format(self.name, cache_file)
             return roidb
 
-        if int(self._year) == 2007 or self._image_set != 'test':
+        if self._image_set != 'test':
             gt_roidb = self.gt_roidb()
             ss_roidb = self._load_selective_search_roidb(gt_roidb)
             roidb = imdb.merge_roidbs(gt_roidb, ss_roidb)
@@ -140,7 +136,7 @@ class sdd(imdb):
         return roidb
 
     def rpn_roidb(self):
-        if int(self._year) == 2007 or self._image_set != 'test':
+        if self._image_set != 'test':
             gt_roidb = self.gt_roidb()
             rpn_roidb = self._load_rpn_roidb(gt_roidb)
             roidb = imdb.merge_roidbs(gt_roidb, rpn_roidb)
@@ -205,10 +201,10 @@ class sdd(imdb):
         for ix, obj in enumerate(objs):
             bbox = obj.find('bndbox')
             # Make pixel indexes 0-based
-            x1 = float(bbox.find('xmin').text) - 1
-            y1 = float(bbox.find('ymin').text) - 1
-            x2 = float(bbox.find('xmax').text) - 1
-            y2 = float(bbox.find('ymax').text) - 1
+            x1 = float(bbox.find('xmin').text)
+            y1 = float(bbox.find('ymin').text)
+            x2 = float(bbox.find('xmax').text)
+            y2 = float(bbox.find('ymax').text)
             cls = self._class_to_ind[obj.find('name').text.lower().strip()]
             boxes[ix, :] = [x1, y1, x2, y2]
             gt_classes[ix] = cls
@@ -234,7 +230,7 @@ class sdd(imdb):
         path = os.path.join(
             self._devkit_path,
             'results',
-            'VOC' + self._year,
+            'sdd',
             'Main',
             filename)
         return path
@@ -260,19 +256,19 @@ class sdd(imdb):
     def _do_python_eval(self, output_dir = 'output'):
         annopath = os.path.join(
             self._devkit_path,
-            'VOC' + self._year,
+            'sdd',
             'Annotations',
             '{:s}.xml')
         imagesetfile = os.path.join(
             self._devkit_path,
-            'VOC' + self._year,
+            'sdd',
             'ImageSets',
             'Main',
             self._image_set + '.txt')
         cachedir = os.path.join(self._devkit_path, 'annotations_cache')
         aps = []
         # The PASCAL VOC metric changed in 2010
-        use_07_metric = True if int(self._year) < 2010 else False
+        use_07_metric = True
         print 'VOC07 metric? ' + ('Yes' if use_07_metric else 'No')
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
@@ -338,7 +334,7 @@ class sdd(imdb):
             self.config['cleanup'] = True
 
 if __name__ == '__main__':
-    from datasets.pascal_voc import pascal_voc
-    d = pascal_voc('trainval', '2007')
+    from datasets.sdd import sdd
+    d = sdd('trainval')
     res = d.roidb
     from IPython import embed; embed()
