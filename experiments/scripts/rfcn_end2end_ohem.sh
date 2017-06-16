@@ -6,6 +6,7 @@
 # Example:
 # ./experiments/scripts/rfcn_end2end_ohem.sh 0 ResNet50 pascal_voc \
 #   --set EXP_DIR foobar RNG_SEED 42 TRAIN.SCALES "[400, 500, 600, 700]"
+# ./experiments/scripts/rfcn_end2end_ohem.sh 0 ResNet-101 sdd
 
 set -x
 set -e
@@ -27,7 +28,7 @@ case $DATASET in
     TRAIN_IMDB="sdd_trainval"
     TEST_IMDB="sdd_test"
     PT_DIR="sdd"
-    ITERS=100
+    ITERS=10
     ;;
   pascal_voc)
     TRAIN_IMDB="voc_2007_trainval+voc_2012_trainval"
