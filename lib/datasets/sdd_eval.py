@@ -214,6 +214,7 @@ def sdd_eval(detpath, annopath, imageset_file, classname, annocache, ovthresh=0.
     :param use_07_metric: whether to use voc07's 11 point ap computation
     :return: rec, prec, ap
     """
+    annocache = os.path.join(annocache, 'annotations.pkl')
     with open(imageset_file, 'r') as f:
         lines = f.readlines()
     image_filenames = [x.strip() for x in lines]
