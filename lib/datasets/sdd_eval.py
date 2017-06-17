@@ -61,7 +61,7 @@ def voc_ap(rec, prec, use_07_metric=False):
         ap = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])
     return ap
 
-def voc_eval(detpath,
+def sdd_eval(detpath,
              annopath,
              imagesetfile,
              classname,
@@ -93,6 +93,14 @@ def voc_eval(detpath,
     # assumes imagesetfile is a text file with each line an image name
     # cachedir caches the annotations in a pickle file
 
+    print '*******(S)*******'
+    print detpath
+    print annopath
+    print imagesetfile
+    print classname
+    print cachedir
+    print '*******(E)*******'
+
     # first load gt
     if not os.path.isdir(cachedir):
         os.mkdir(cachedir)
@@ -121,7 +129,7 @@ def voc_eval(detpath,
 
     # extract gt objects for this class
     class_recs = {}
-    npos = 0
+    npos = 1
     for imagename in imagenames:
         R = [obj for obj in recs[imagename] if obj['name'] == classname]
         bbox = np.array([x['bbox'] for x in R])
