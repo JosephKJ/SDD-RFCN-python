@@ -124,6 +124,7 @@ def sdd_eval(detpath,
             cPickle.dump(recs, f)
     else:
         # load
+        print 'Loading from cache (---)'
         with open(cachefile, 'r') as f:
             recs = cPickle.load(f)
 
