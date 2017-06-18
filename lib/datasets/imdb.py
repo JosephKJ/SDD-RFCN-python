@@ -103,6 +103,8 @@ class imdb(object):
         num_images = self.num_images
         widths = self._get_widths()
         for i in xrange(num_images):
+            if boxes[i][2] < boxes[i][0]:
+                boxes[i][0] = 0
             boxes = self.roidb[i]['boxes'].copy()
             oldx1 = boxes[:, 0].copy()
             oldx2 = boxes[:, 2].copy()
