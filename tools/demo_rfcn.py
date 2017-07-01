@@ -24,17 +24,23 @@ import scipy.io as sio
 import caffe, os, sys, cv2
 import argparse
 
-CLASSES = ('__background__',
-           'aeroplane', 'bicycle', 'bird', 'boat',
-           'bottle', 'bus', 'car', 'cat', 'chair',
-           'cow', 'diningtable', 'dog', 'horse',
-           'motorbike', 'person', 'pottedplant',
-           'sheep', 'sofa', 'train', 'tvmonitor')
+# CLASSES = ('__background__',
+#            'aeroplane', 'bicycle', 'bird', 'boat',
+#            'bottle', 'bus', 'car', 'cat', 'chair',
+#            'cow', 'diningtable', 'dog', 'horse',
+#            'motorbike', 'person', 'pottedplant',
+#            'sheep', 'sofa', 'train', 'tvmonitor')
+
+CLASSES = ('__background__',  # always index 0
+                         'pedestrian', 'biker', 'skater', 'car',
+                         'bus', 'cart')
 
 NETS = {'ResNet-101': ('ResNet-101',
                   'resnet101_rfcn_final.caffemodel'),
         'ResNet-50': ('ResNet-50',
-                  'resnet50_rfcn_final.caffemodel')}
+                  'resnet50_rfcn_final.caffemodel'),
+        'SDD': ('ResNet-101',
+                  'resnet101_rfcn_ohem_iter_110000.caffemodel')}
 
 
 def vis_detections(im, class_name, dets, thresh=0.5):
@@ -106,7 +112,7 @@ def parse_args():
                         help='Use CPU mode (overrides --gpu)',
                         action='store_true')
     parser.add_argument('--net', dest='demo_net', help='Network to use [ResNet-101]',
-                        choices=NETS.keys(), default='ResNet-101')
+                        choices=NETS.keys(), default='SDD')
 
     args = parser.parse_args()
 
@@ -142,6 +148,8 @@ if __name__ == '__main__':
 
     im_names = ['000456.jpg', '000542.jpg', '001150.jpg',
                 '001763.jpg', '004545.jpg']
+
+    im_names = ['000456.jpg']
 
     for im_name in im_names:
         print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
