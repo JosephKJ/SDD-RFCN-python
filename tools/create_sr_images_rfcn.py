@@ -66,7 +66,8 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     plt.axis('off')
     plt.tight_layout()
     # plt.draw()
-    plt.savefig(os.path.join(cfg.DATA_DIR, 'demo', 'full_image.png'))
+    plt.savefig(os.path.join(cfg.DATA_DIR, 'full_image_'+class_name+'.png'))
+    plt.close(fig)
 
 
 def save_detections(im, class_name, dets, path, thresh=0.5):
@@ -122,7 +123,10 @@ def get_detections(net, image_name):
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
         save_detections(im, cls, dets, crop_dest_location, thresh=CONF_THRESH)
+        print 'Saving orignial'
         vis_detections(im, cls, dets, thresh=CONF_THRESH)
+        print 'Saving orignial Done!'
+
 
 def parse_args():
     """Parse input arguments."""
