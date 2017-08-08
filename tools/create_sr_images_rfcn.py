@@ -76,7 +76,7 @@ def save_detections(im, class_name, dets, path, thresh=0.5):
         return
     im = im[:, :, (2, 1, 0)]
 
-    print 'Saving Detections.'
+    # print 'Saving Detections.'
 
     for i in inds:
         bbox = dets[i, :4]
@@ -87,7 +87,7 @@ def save_detections(im, class_name, dets, path, thresh=0.5):
         cv2.imwrite(fname, patch)
         # break
 
-    print 'Saved Detections.'
+    # print 'Saved Detections.'
 
 
 
@@ -121,6 +121,7 @@ def get_detections(net, image_name):
                           cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
+        print 'Saving detections...'
         save_detections(im, cls, dets, crop_dest_location, thresh=CONF_THRESH)
         print 'Saving orignial'
         vis_detections(im, cls, dets, thresh=CONF_THRESH)
