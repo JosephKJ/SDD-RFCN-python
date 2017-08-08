@@ -100,7 +100,7 @@ def get_detections(net, image_name):
     im = cv2.imread(im_file)
 
     # Path to store crops
-    crop_dest_location = os.path.join(cfg.DATA_DIR, 'detections')
+    crop_dest_location = os.path.join(cfg.DATA_DIR, 'detections', 'img')
 
     # Detect all object classes and regress object bounds
     timer = Timer()
