@@ -35,7 +35,7 @@ NETS = {'ResNet-101': ('ResNet-101',
                   'resnet101_rfcn_ohem_iter_110000.caffemodel')}
 
 
-def vis_detections(im, class_name, dets, thresh=0.5):
+def vis_detections(im, class_name, dets, image_name, thresh=0.5):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
@@ -65,7 +65,7 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     plt.axis('off')
     plt.tight_layout()
     # plt.draw()
-    plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', class_name+'.png'))
+    plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', image_name+'_'+class_name+'.png'))
     plt.close(fig)
 
 
@@ -98,9 +98,10 @@ def get_detections(net, image_name):
     # Load the demo image
     im_file = os.path.join(cfg.DATA_DIR, 'demo', image_name)
     im = cv2.imread(im_file)
+    image_name = image_name.split('.')[0]
 
     # Path to store crops
-    crop_dest_location = os.path.join(cfg.DATA_DIR, 'detections', 'img')
+    crop_dest_location = os.path.join(cfg.DATA_DIR, 'detections', image_name)
 
     # Detect all object classes and regress object bounds
     timer = Timer()
@@ -124,7 +125,7 @@ def get_detections(net, image_name):
         print 'Saving detections...'
         save_detections(im, cls, dets, crop_dest_location, thresh=CONF_THRESH)
         print 'Saving orignial'
-        vis_detections(im, cls, dets, thresh=CONF_THRESH)
+        vis_detections(im, cls, dets, image_name, thresh=CONF_THRESH)
         print 'Saving orignial Done!'
 
 
