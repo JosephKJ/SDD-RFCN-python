@@ -65,7 +65,7 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     plt.axis('off')
     plt.tight_layout()
     # plt.draw()
-    plt.savefig(os.path.join(cfg.DATA_DIR, 'new_full_image_'+class_name+'.png'))
+    plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', class_name+'.png'))
     plt.close(fig)
 
 
