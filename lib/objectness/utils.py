@@ -12,7 +12,7 @@ def generate_objectness_map(image, hr_method='interpolation'):
     """
     # 1. Create a Higher Resolution Image
     if hr_method == "interpolation":
-        img = scipy.misc.imresize(image, 8.0)
+        img = scipy.misc.imresize(image, 8.0, interp='bicubic')
     else:
         # TODO: Super Resolution
         pass

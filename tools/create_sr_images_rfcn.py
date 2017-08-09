@@ -87,7 +87,7 @@ def save_detections(im, class_name, dets, path, thresh=0.5):
         map = generate_objectness_map(patch)
         fname = path + '_' + class_name + '_' + str(i) + '.png'
         cv2.imwrite(fname, cv2.cvtColor(patch, cv2.COLOR_RGB2BGR))
-        fname = path + '_hr_' + class_name + '_' + str(i) + '.png'
+        fname = path + '_hr_bc_' + class_name + '_' + str(i) + '.png'
         cv2.imwrite(fname, cv2.cvtColor(map, cv2.COLOR_RGB2BGR))
         # break
 
