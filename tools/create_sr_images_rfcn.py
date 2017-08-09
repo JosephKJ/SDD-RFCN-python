@@ -54,7 +54,7 @@ def vis_detections(im, class_name, dets, image_name, thresh=0.5):
                           edgecolor='red', linewidth=3.5)
             )
         ax.text(bbox[0], bbox[1] - 2,
-                '{:s} {:.3f}'.format(class_name, score),
+                '{:s} {:.3f}'.format(class_name+'_'+str(i), score),
                 bbox=dict(facecolor='blue', alpha=0.5),
                 fontsize=14, color='white')
 
