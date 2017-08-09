@@ -17,7 +17,7 @@ from fast_rcnn.config import cfg
 from fast_rcnn.test import im_detect
 from fast_rcnn.nms_wrapper import nms
 from utils.timer import Timer
-from objectness.utils import sample
+from objectness.utils import generate_objectness_map
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
@@ -84,6 +84,7 @@ def save_detections(im, class_name, dets, path, thresh=0.5):
         score = dets[i, -1]
         print bbox
         patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+        map = generate_objectness_map(patch)
         fname = path + '_' + class_name + '_' + str(i) + '.png'
         cv2.imwrite(fname, cv2.cvtColor(patch, cv2.COLOR_RGB2BGR))
         # break
@@ -183,4 +184,3 @@ if __name__ == '__main__':
 
     plt.show()
     print 'Done.'
-    print sample()
