@@ -84,7 +84,7 @@ def save_detections(im, class_name, dets, path, thresh=0.5):
         print bbox
         patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
         fname = path + '_' + class_name + '_' + str(i) + '.png'
-        cv2.imwrite(fname, patch)
+        cv2.imwrite(fname, cv2.cvtColor(patch, cv2.COLOR_RGB2BGR))
         # break
 
     # print 'Saved Detections.'
