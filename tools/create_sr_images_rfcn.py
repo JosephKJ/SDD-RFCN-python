@@ -17,6 +17,7 @@ from fast_rcnn.config import cfg
 from fast_rcnn.test import im_detect
 from fast_rcnn.nms_wrapper import nms
 from utils.timer import Timer
+from objectness.utils import sample
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
@@ -182,3 +183,4 @@ if __name__ == '__main__':
 
     plt.show()
     print 'Done.'
+    print sample()
