@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-# caffe_root = '/home/cs17mtech01001/workspace/SDD-RFCN-python/caffe'
-# sys.path.insert(0, caffe_root + 'python')
+import _init_paths
 import caffe
 
 def get_map(image):
