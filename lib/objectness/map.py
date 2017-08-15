@@ -10,6 +10,18 @@ caffe_root = os.path.join(os.path.dirname(__file__), '..', '..', 'caffe')
 
 def get_map(image):
     print 'Inside get_map.'
+    # caffe.set_device(0)
+    # caffe.set_mode_gpu()
+
+    caffe.set_mode_cpu()
+
+    model_def = caffe_root + 'models/bvlc_reference_caffenet/deploy.prototxt'
+    model_weights = caffe_root + 'models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel'
+
+    net = caffe.Net(model_def, model_weights, caffe.TEST)
+
+    print 'Loaded Net.'
+
 
 
 def display_image(image):
@@ -24,6 +36,6 @@ if __name__ == '__main__':
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    display_image(img)
+    # display_image(img)
     get_map(img)
 
