@@ -60,8 +60,17 @@ def get_map(image, verbose=False):
         top_inds = result.argsort()[::-1][:5]  # reverse sort and take five largest items
         print 'probabilities and labels:', zip(result[top_inds], labels[top_inds])
 
-    filters = net.params['conv1'][0].data
-    visualize(filters.transpose(0, 2, 3, 1))
+    # filters = net.params['conv1'][0].data
+    # visualize(filters.transpose(0, 2, 3, 1))
+
+    feat = net.blobs['conv1'].data[0, :36]
+    visualize(feat)
+
+    feat = net.blobs['pool5'].data[0]
+    visualize(feat)
+
+    feat = net.blobs['conv5'].data[0]
+    visualize(feat)
 
 
 def visualize(data):
@@ -96,6 +105,7 @@ def display_image(image):
 if __name__ == '__main__':
     print('Inside Main.')
     image_path = os.path.join(caffe_root, 'examples/images/cat.jpg')
+    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_pedestrian_4.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -105,6 +115,6 @@ if __name__ == '__main__':
     # print np.array_str(img)
     # print '\n--- Image Details ENDS---\n'
 
-    # display_image(img)
+    display_image(img)
     get_map(img)
 
