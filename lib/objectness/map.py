@@ -1,6 +1,8 @@
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 
+import caffe
 
 def get_map(image):
     print 'Inside get_map.'
