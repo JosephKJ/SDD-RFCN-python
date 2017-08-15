@@ -13,7 +13,7 @@ def get_map(image):
 def display_image(image):
     plt.axis('off')
     plt.imshow(image)
-    plt.draw()
+    # plt.draw()
     plt.show()
 
 
