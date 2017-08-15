@@ -8,6 +8,7 @@ import caffe
 
 caffe_root = os.path.join(os.path.dirname(__file__), '..', '..', 'caffe')
 
+
 def get_map(image):
     print 'Inside get_map.'
     # caffe.set_device(0)
@@ -20,7 +21,15 @@ def get_map(image):
 
     net = caffe.Net(model_def, model_weights, caffe.TEST)
 
-    print 'Loaded Net.'
+    print 'Network Loaded Successfully.'
+
+    print '\nParameters\n'
+    for layer_name, param in net.params.iteritems():
+        print layer_name + '\t' + str(param[0].data.shape), str(param[1].data.shape)
+
+    print '\nBlobs\n'
+    for layer_name, blob in net.blobs.iteritems():
+        print layer_name + '\t' + str(blob.data.shape)
 
 
 
