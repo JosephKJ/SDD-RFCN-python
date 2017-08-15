@@ -10,6 +10,7 @@ def display_image(image):
     plt.axis('off')
     plt.imshow(image)
     plt.draw()
+    plt.show()
 
 
 if __name__ == '__main__':
