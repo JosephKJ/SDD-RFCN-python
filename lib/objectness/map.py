@@ -15,8 +15,8 @@ def get_map(image):
 
     caffe.set_mode_cpu()
 
-    model_def = caffe_root + 'models/bvlc_reference_caffenet/deploy.prototxt'
-    model_weights = caffe_root + 'models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel'
+    model_def = os.path.join(caffe_root, 'models/bvlc_reference_caffenet/deploy.prototxt')
+    model_weights = os.path.join(caffe_root, 'models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
 
     net = caffe.Net(model_def, model_weights, caffe.TEST)
 
