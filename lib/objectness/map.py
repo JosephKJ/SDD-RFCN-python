@@ -35,7 +35,7 @@ class HeatMap:
         transformer = caffe.io.Transformer({'data': (10, 3, image_shape[0], image_shape[1])})
         transformer.set_transpose('data', (2, 0, 1)) # Channel, Height, Width
         transformer.set_channel_swap('data', (2, 1, 0)) # The model expexts BGR
-        transformed_image = transformer.preprocess('data', img)
+        transformed_image = transformer.preprocess('data', image)
 
         # Performing Forward Pass
         net = self.net
@@ -53,8 +53,8 @@ class HeatMap:
         feature_sum = np.sum(feat, axis=0)
         np.set_printoptions(threshold='nan')
         feature_sum = (255 * (feature_sum - np.min(feature_sum)) / np.ptp(feature_sum)).astype(int)
-        threshold = feature_sum.mean()
-        feature_sum = np.ma.masked_where(feature_sum <= threshold+20, feature_sum)
+        threshold = feature_sum.mean()+20
+        feature_sum = np.ma.masked_where(feature_sum <= threshold, feature_sum)
 
         # Scaling the map to the input image size.
         feature_sum = scipy.misc.imresize(feature_sum, 2.0, interp='bicubic')
