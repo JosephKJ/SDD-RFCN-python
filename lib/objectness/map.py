@@ -49,14 +49,12 @@ class HeatMap:
         elif self.arch == 'VGG16':
             feat = net.blobs['conv5_3'].data[0]
 
-        # visualize(feat, 'conv5')
-
         # Generating the mask
         feature_sum = np.sum(feat, axis=0)
         np.set_printoptions(threshold='nan')
         feature_sum = (255 * (feature_sum - np.min(feature_sum)) / np.ptp(feature_sum)).astype(int)
-        threshold = feature_sum.mean()+20
-        feature_sum = np.ma.masked_where(feature_sum <= threshold, feature_sum)
+        threshold = feature_sum.mean()
+        feature_sum = np.ma.masked_where(feature_sum <= threshold+20, feature_sum)
 
         # Scaling the map to the input image size.
         feature_sum = scipy.misc.imresize(feature_sum, 2.0, interp='bicubic')
@@ -67,29 +65,6 @@ class HeatMap:
 
         return feature_sum
 
-    def visualize(self, data, label):
-        """Take an array of shape (n, height, width) or (n, height, width, 3)
-           and visualize each (height, width) thing in a grid of size approx. sqrt(n) by sqrt(n)"""
-
-        # normalize data for display
-        data = (data - data.min()) / (data.max() - data.min())
-
-        # force the number of filters to be square
-        n = int(np.ceil(np.sqrt(data.shape[0])))
-        padding = (((0, n ** 2 - data.shape[0]),
-                    (0, 1), (0, 1))  # add some space between filters
-                   + ((0, 0),) * (data.ndim - 3))  # don't pad the last dimension (if there is one)
-        data = np.pad(data, padding, mode='constant', constant_values=1)  # pad with ones (white)
-
-        # tile the filters into an image
-        data = data.reshape((n, n) + data.shape[1:]).transpose((0, 2, 1, 3) + tuple(range(4, data.ndim + 1)))
-        data = data.reshape((n * data.shape[1], n * data.shape[3]) + data.shape[4:])
-
-        plt.imshow(data)
-        plt.axis('off')
-        # plt.savefig(os.path.join(caffe_root, 'activations', label+'.png'))
-        plt.show()
-
     def display_image(self, image):
         # plt.axis('off')
         plt.imshow(image)
@@ -98,29 +73,8 @@ class HeatMap:
 
 if __name__ == '__main__':
     print('Inside Main.')
-    image_path = os.path.join(caffe_root, 'examples/images/cat.jpg')
-    # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
-    # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_skater_0.png')
-    # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
-    # img = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    #
-    # # display_image(img)
-    # # get_map(img, verbose=True)
-    #
+
     hm = HeatMap()
-    #
-    # hMap = hm.get_map(img, verbose=True)
-    # hm.display_image(hMap)
-    #
-    # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
-    # img = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    # img = scipy.misc.imresize(img, 2.0, interp='bicubic')
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # hMap = hm.get_map(img, verbose=True)
-    # print 'Shape of the image', img.shape
-    # print 'Shape of the map', hMap.shape
-    # hm.display_image(hMap)
 
     image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_22.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
@@ -128,11 +82,3 @@ if __name__ == '__main__':
     hMap = hm.get_map(img, verbose=True)
     print 'Shape of the map', hMap.shape
     hm.display_image(hMap)
-
-    # for index in range(0, 22):
-    #     image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_'+ str(index) +'.png')
-    #     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    #     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    #     hMap = hm.get_map(img, verbose=True)
-    #     print 'Shape of the map', hMap.shape
-    #     hm.display_image(hMap)
