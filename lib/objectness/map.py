@@ -10,7 +10,7 @@ caffe_root = os.path.join(os.path.dirname(__file__), '..', '..', 'caffe')
 
 
 class HeatMap:
-    def __init__(self, arch='CaffeNet'):
+    def __init__(self, arch='VGG16'):
         caffe.set_device(5)
         caffe.set_mode_gpu()
         # caffe.set_mode_cpu()
@@ -84,7 +84,7 @@ class HeatMap:
         plt.show()
 
     def display_image(self, image):
-        plt.axis('off')
+        # plt.axis('off')
         plt.imshow(image)
         plt.show()
 
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     image_path = os.path.join(caffe_root, 'examples/images/cat.jpg')
     # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
     # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_skater_0.png')
-    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_5.png')
+    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     hMap = hm.get_map(img, verbose=True)
     hm.display_image(hMap)
 
-    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_skater_0.png')
+    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_22.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     hMap = hm.get_map(img, verbose=True)
