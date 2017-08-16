@@ -23,7 +23,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     # 2. Get objectness
     heat_map = heatMapObj.get_map(img)
     min_pixel_intensity = heat_map.min()
-    binary_map = np.where(heat_map > min_pixel_intensity, 1.0, 0.0)
+    binary_map = np.where(heat_map > min_pixel_intensity, 1, 0)
 
     # Trim off any extra rows in the map
     map_h, map_w = binary_map.shape
@@ -41,8 +41,9 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
 
     # Applying map on the image
     filtered_image = image * three_channel_map
+    filtered_image = filtered_image.astype(np.uint8)
 
-    heatMapObj.display_image(image)
+    # heatMapObj.display_image(image)
     heatMapObj.display_image(filtered_image)
 
     return img
@@ -53,7 +54,7 @@ if __name__ == '__main__':
     hm = HeatMap()
 
     image_path = os.path.join(
-        '/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_pedestrian_10.png')
+        '/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_pedestrian_2.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
