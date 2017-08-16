@@ -23,7 +23,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     # 2. Get objectness
     heat_map = heatMapObj.get_map(img)
     min_pixel_intensity = heat_map.min()
-    binary_map = np.where(heat_map > min_pixel_intensity, 1, 0)
+    binary_map = np.where(heat_map > min_pixel_intensity, 1.0, 0.0)
 
     # Trim off any extra rows in the map
     map_h, map_w = binary_map.shape
@@ -39,27 +39,11 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     # Expand the map to three channels
     three_channel_map = np.stack((binary_map, binary_map, binary_map), axis=2)
 
-    print type(image)
-
     # Applying map on the image
-    image = image * three_channel_map
+    filtered_image = image * three_channel_map
 
-    print three_channel_map.shape
-    print binary_map.shape
-    print image.shape
-    print heat_map.shape
-
-    print type(image)
-
-    # print heat_map
-    # print 'min_pixel_intensity', min_pixel_intensity
-    # print binary_map
-    # heatMapObj.display_image(image)
-    # heatMapObj.display_image(heat_map)
-    # heatMapObj.display_image(binary_map)
-    # print image.shape
-    # print heat_map.shape
-
+    heatMapObj.display_image(image)
+    heatMapObj.display_image(filtered_image)
 
     return img
 
@@ -69,7 +53,7 @@ if __name__ == '__main__':
     hm = HeatMap()
 
     image_path = os.path.join(
-        '/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_pedestrian_7.png')
+        '/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_pedestrian_10.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
