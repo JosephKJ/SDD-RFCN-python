@@ -52,15 +52,15 @@ def get_map(image, verbose=False):
     net.blobs['data'].reshape(10, 3, image_shape[0], image_shape[1])
     net.blobs['data'].data[...] = transformed_image
     output = net.forward()
-    result = output['prob'][0]
-
-    if verbose:
-        print '\nPredicted class: ', result.argmax()
-        labels_file = caffe_root + '/data/ilsvrc12/synset_words.txt'
-        labels = np.loadtxt(labels_file, str, delimiter='\t')
-        print 'output label:', labels[result.argmax()]
-        top_inds = result.argsort()[::-1][:5]  # reverse sort and take five largest items
-        print 'probabilities and labels:', zip(result[top_inds], labels[top_inds])
+    # result = output['prob'][0]
+    #
+    # if verbose:
+    #     print '\nPredicted class: ', result.argmax()
+    #     labels_file = caffe_root + '/data/ilsvrc12/synset_words.txt'
+    #     labels = np.loadtxt(labels_file, str, delimiter='\t')
+    #     print 'output label:', labels[result.argmax()]
+    #     top_inds = result.argsort()[::-1][:5]  # reverse sort and take five largest items
+    #     print 'probabilities and labels:', zip(result[top_inds], labels[top_inds])
 
     # filters = net.params['conv1'][0].data
     # visualize(filters.transpose(0, 2, 3, 1))
