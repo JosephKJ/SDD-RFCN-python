@@ -93,5 +93,5 @@ if __name__ == '__main__':
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     # display_image(img)
-    get_map(img)
+    get_map(img, verbose=True)
 
