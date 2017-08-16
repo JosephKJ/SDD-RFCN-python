@@ -2,6 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import scipy
 
 import _init_paths
 import caffe
@@ -54,7 +55,13 @@ class HeatMap:
         feature_sum = np.sum(feat, axis=0)
         np.set_printoptions(threshold='nan')
         feature_sum = (255 * (feature_sum - np.min(feature_sum)) / np.ptp(feature_sum)).astype(int)
-        feature_sum = np.ma.masked_where(feature_sum <= feature_sum.mean()+20, feature_sum)
+        threshold = feature_sum.mean()+20
+        feature_sum = np.ma.masked_where(feature_sum <= threshold, feature_sum)
+
+        # Scaling the map to the input image size.
+        feature_sum = scipy.misc.imresize(feature_sum, 2.0, interp='bicubic')
+        feature_sum = np.ma.masked_where(feature_sum <= threshold, feature_sum)
+
         if verbose:
             print feature_sum
 
@@ -94,22 +101,38 @@ if __name__ == '__main__':
     image_path = os.path.join(caffe_root, 'examples/images/cat.jpg')
     # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
     # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_skater_0.png')
-    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
-    img = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-    # display_image(img)
-    # get_map(img, verbose=True)
-
+    # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
+    # img = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    #
+    # # display_image(img)
+    # # get_map(img, verbose=True)
+    #
     hm = HeatMap()
-
-    hMap = hm.get_map(img, verbose=True)
-    hm.display_image(hMap)
+    #
+    # hMap = hm.get_map(img, verbose=True)
+    # hm.display_image(hMap)
+    #
+    # image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
+    # img = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    # img = scipy.misc.imresize(img, 2.0, interp='bicubic')
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # hMap = hm.get_map(img, verbose=True)
+    # print 'Shape of the image', img.shape
+    # print 'Shape of the map', hMap.shape
+    # hm.display_image(hMap)
 
     image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_22.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     hMap = hm.get_map(img, verbose=True)
+    print 'Shape of the map', hMap.shape
     hm.display_image(hMap)
 
-
+    # for index in range(0, 22):
+    #     image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_'+ str(index) +'.png')
+    #     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    #     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    #     hMap = hm.get_map(img, verbose=True)
+    #     print 'Shape of the map', hMap.shape
+    #     hm.display_image(hMap)
