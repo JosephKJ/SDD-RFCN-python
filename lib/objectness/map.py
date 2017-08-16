@@ -10,7 +10,6 @@ caffe_root = os.path.join(os.path.dirname(__file__), '..', '..', 'caffe')
 
 
 def get_map(image, verbose=False):
-    print 'Inside get_map.'
     # caffe.set_device(0)
     # caffe.set_mode_gpu()
 
@@ -30,8 +29,10 @@ def get_map(image, verbose=False):
         for layer_name, blob in net.blobs.iteritems():
             print layer_name + '\t' + str(blob.data.shape)
 
+    image_shape = image.shape
+
     # Image Pre-processing
-    transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
+    transformer = caffe.io.Transformer({'data': (10, 3, image_shape[0], image_shape[1])})
     transformer.set_transpose('data', (2, 0, 1)) # Channel, Height, Width
     transformer.set_channel_swap('data', (2, 1, 0)) # The model expexts BGR
     transformed_image = transformer.preprocess('data', img)
@@ -48,6 +49,7 @@ def get_map(image, verbose=False):
         print '\n--- Image Details after Transformation ENDS---\n'
 
     # Performing Forward Pass
+    net.blobs['data'].reshape(10, 3, image_shape[0], image_shape[1])
     net.blobs['data'].data[...] = transformed_image
     output = net.forward()
     result = output['prob'][0]
@@ -63,17 +65,39 @@ def get_map(image, verbose=False):
     # filters = net.params['conv1'][0].data
     # visualize(filters.transpose(0, 2, 3, 1))
 
-    feat = net.blobs['conv1'].data[0, :36]
-    visualize(feat)
-
-    feat = net.blobs['pool5'].data[0]
-    visualize(feat)
+    # feat = net.blobs['conv1'].data[0, :36]
+    # visualize(feat, 'conv1')
+    #
+    # feat = net.blobs['conv2'].data[0]
+    # visualize(feat, 'conv2')
+    #
+    # feat = net.blobs['conv3'].data[0]
+    # visualize(feat, 'conv3')
+    #
+    # feat = net.blobs['conv4'].data[0]
+    # visualize(feat, 'conv4')
 
     feat = net.blobs['conv5'].data[0]
-    visualize(feat)
+    # visualize(feat, 'conv5')
+
+    feature_sum = np.sum(feat, axis=0)
+    np.set_printoptions(threshold='nan')
+    print feature_sum
+    feature_sum = (255 * (feature_sum - np.min(feature_sum)) / np.ptp(feature_sum)).astype(int)
+    print feature_sum
+    print feature_sum.mean()
+    feature_sum = np.ma.masked_where(feature_sum <= feature_sum.mean()+20, feature_sum)
+    print feature_sum
+
+    plt.imshow(feature_sum)
+    plt.axis('off')
+    plt.show()
+
+    # feat = net.blobs['pool5'].data[0]
+    # visualize(feat, 'pool5')
 
 
-def visualize(data):
+def visualize(data, label):
     """Take an array of shape (n, height, width) or (n, height, width, 3)
        and visualize each (height, width) thing in a grid of size approx. sqrt(n) by sqrt(n)"""
 
@@ -93,6 +117,7 @@ def visualize(data):
 
     plt.imshow(data)
     plt.axis('off')
+    # plt.savefig(os.path.join(caffe_root, 'activations', label+'.png'))
     plt.show()
 
 
@@ -105,7 +130,7 @@ def display_image(image):
 if __name__ == '__main__':
     print('Inside Main.')
     image_path = os.path.join(caffe_root, 'examples/images/cat.jpg')
-    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_pedestrian_7.png')
+    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_15.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -115,6 +140,6 @@ if __name__ == '__main__':
     # print np.array_str(img)
     # print '\n--- Image Details ENDS---\n'
 
-    display_image(img)
+    # display_image(img)
     get_map(img)
 
