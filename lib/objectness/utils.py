@@ -25,16 +25,40 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     min_pixel_intensity = heat_map.min()
     binary_map = np.where(heat_map > min_pixel_intensity, 1, 0)
 
-    print heat_map
-    print 'min_pixel_intensity', min_pixel_intensity
-    print binary_map
+    # Trim off any extra rows in the map
+    map_h, map_w = binary_map.shape
+    img_h, img_w, _ = image.shape
+    if map_h > img_h:
+        diff = map_h - img_h
+        binary_map = np.delete(binary_map, 1, axis=0)  # remove a row
 
-    heatMapObj.display_image(image)
-    heatMapObj.display_image(heat_map)
-    heatMapObj.display_image(binary_map)
+    if map_w > img_w:
+        diff = map_w - img_w
+        binary_map = np.delete(binary_map, 1, axis=1)  # remove a column
 
+    # Expand the map to three channels
+    three_channel_map = np.stack((binary_map, binary_map, binary_map), axis=2)
+
+    print type(image)
+
+    # Applying map on the image
+    image = image * three_channel_map
+
+    print three_channel_map.shape
+    print binary_map.shape
     print image.shape
     print heat_map.shape
+
+    print type(image)
+
+    # print heat_map
+    # print 'min_pixel_intensity', min_pixel_intensity
+    # print binary_map
+    # heatMapObj.display_image(image)
+    # heatMapObj.display_image(heat_map)
+    # heatMapObj.display_image(binary_map)
+    # print image.shape
+    # print heat_map.shape
 
 
     return img

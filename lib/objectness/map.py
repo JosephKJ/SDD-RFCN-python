@@ -82,3 +82,12 @@ if __name__ == '__main__':
     hMap = hm.get_map(img, verbose=True)
     print 'Shape of the map', hMap.shape
     hm.display_image(hMap)
+
+    # for index in range(0, 23):
+    #     image_path = os.path.join(
+    #         '/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_'+str(index)+'.png')
+    #     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    #     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    #     hMap = hm.get_map(img, verbose=False)
+    #     print 'Shape of the map', hMap.shape
+    #     # hm.display_image(hMap)
