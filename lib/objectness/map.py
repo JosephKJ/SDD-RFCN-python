@@ -130,7 +130,7 @@ def display_image(image):
 if __name__ == '__main__':
     print('Inside Main.')
     image_path = os.path.join(caffe_root, 'examples/images/cat.jpg')
-    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_15.png')
+    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
