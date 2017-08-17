@@ -64,7 +64,7 @@ def semantic_segment_image(heatMapObj, image, color='red'):
 
     # Combined Image
     full_image = background + foreground
-    hm.display_image(full_image)
+    return full_image
 
 if __name__ == '__main__':
     print('Inside Main.')

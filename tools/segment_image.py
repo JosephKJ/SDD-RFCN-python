@@ -9,7 +9,7 @@ from fast_rcnn.config import cfg
 from fast_rcnn.test import im_detect
 from fast_rcnn.nms_wrapper import nms
 from utils.timer import Timer
-from objectness.utils import generate_objectness_map
+from objectness.utils import semantic_segment_image
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
@@ -35,40 +35,24 @@ def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, 
     :param show_semantic_info:
     :return:
     """
+    color_label = {'pedestrian': 'red', 'biker': 'green', 'skater': 'blue',
+                   'car': 'black', 'bus': 'white', 'cart': 'violet'}
+
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
         return
     im = im[:, :, (2, 1, 0)]
 
-    print im.shape
-
-    fig, ax = plt.subplots(1)
-    ax.imshow(im)
     for i in inds:
         bbox = dets[i, :4]
         score = dets[i, -1]
+        patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+        semantic_data = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
+        im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
 
-        ax.add_patch(
-            plt.Rectangle((bbox[0], bbox[1]),
-                          bbox[2] - bbox[0],
-                          bbox[3] - bbox[1], fill=False,
-                          edgecolor='red', linewidth=3.5)
-            )
-        ax.text(bbox[0], bbox[1] - 2,
-                '{:s} {:.3f}'.format(class_name+'_'+str(i), score),
-                bbox=dict(facecolor='blue', alpha=0.5),fontsize=14, color='white')
-
-    # ax.set_title('{} detections with p({} | box) >= {:.1f}'.format(class_name, class_name, thresh), fontsize=14)
-
-    plt.axis('off')
-    plt.tight_layout()
-    plt.draw()
+    plt.imshow(im)
     plt.show()
-
-    plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', 'kj_'+image_name + '_' + class_name + '.png'))
-    plt.close(fig)
-    # plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', image_name+'_'+class_name+'.png'))
-    # plt.close(fig)
+    cv2.imwrite(os.path.join(cfg.DATA_DIR, 'full_images', 'kjj'+image_name+'_'+class_name+'.png'), cv2.cvtColor(map, cv2.COLOR_RGB2BGR))
 
 
 def plot_detections_old(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, show_semantic_info=True):
