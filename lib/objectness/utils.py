@@ -56,7 +56,7 @@ def semantic_segment_image(heatMapObj, image, color='red'):
     background = (image * three_channel_map).astype(np.uint8)
 
     # Segmentation Foreground
-    r,g,b = get_RGB_from_color(color)
+    r,g,b = get_rgb_from_color(color)
     foreground = np.stack((binary_map*r, binary_map*g, binary_map*b), axis=2).astype(np.uint8)
 
     # Combined Image
