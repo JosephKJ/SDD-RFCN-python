@@ -77,8 +77,3 @@ if __name__ == '__main__':
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     semantic_segment_image(hm, img, 'red')
-    semantic_segment_image(hm, img, 'green')
-    semantic_segment_image(hm, img, 'blue')
-    semantic_segment_image(hm, img, 'black')
-    semantic_segment_image(hm, img, 'white')
-    semantic_segment_image(hm, img, 'violet')
