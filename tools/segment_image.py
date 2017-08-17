@@ -23,8 +23,61 @@ CLASSES = ('__background__','pedestrian', 'biker', 'skater', 'car', 'bus', 'cart
 NETS = {'SDD': ('ResNet-101','resnet101_rfcn_ohem_iter_110000.caffemodel')}
 
 
-def vis_detections(im, class_name, dets, image_name, thresh=0.5):
-    """Draw detected bounding boxes."""
+def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, show_semantic_info=True):
+    """
+
+    :param heat_map_obj:
+    :param im:
+    :param class_name:
+    :param dets:
+    :param image_name:
+    :param thresh:
+    :param show_semantic_info:
+    :return:
+    """
+    inds = np.where(dets[:, -1] >= thresh)[0]
+    if len(inds) == 0:
+        return
+    im = im[:, :, (2, 1, 0)]
+    fig, ax = plt.subplots(figsize=(12, 12))
+    ax.imshow(im, aspect='equal')
+    for i in inds:
+        bbox = dets[i, :4]
+        score = dets[i, -1]
+
+        ax.add_patch(
+            plt.Rectangle((bbox[0], bbox[1]),
+                          bbox[2] - bbox[0],
+                          bbox[3] - bbox[1], fill=False,
+                          edgecolor='red', linewidth=3.5)
+            )
+        ax.text(bbox[0], bbox[1] - 2,
+                '{:s} {:.3f}'.format(class_name+'_'+str(i), score),
+                bbox=dict(facecolor='blue', alpha=0.5),fontsize=14, color='white')
+
+    ax.set_title(('{} detections with '
+                  'p({} | box) >= {:.1f}').format(class_name, class_name,thresh),fontsize=14)
+
+    plt.axis('off')
+    plt.tight_layout()
+    plt.draw()
+    plt.show()
+
+    # plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', image_name+'_'+class_name+'.png'))
+    # plt.close(fig)
+
+
+def plot_detections_old(heat_map_obj, im, class_name, dets, image_name, thresh=0.5):
+    """
+    Draw detected bounding boxes, and map the semantic segmentation information.
+    :param heat_map_obj:
+    :param im:
+    :param class_name:
+    :param dets:
+    :param image_name:
+    :param thresh:
+    :return:
+    """
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
         return
@@ -52,9 +105,10 @@ def vis_detections(im, class_name, dets, image_name, thresh=0.5):
                   fontsize=14)
     plt.axis('off')
     plt.tight_layout()
-    # plt.draw()
-    plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', image_name+'_'+class_name+'.png'))
-    plt.close(fig)
+    plt.draw()
+    # plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', image_name+'_'+class_name+'.png'))
+    # plt.close(fig)
+    plt.show()
 
 
 def save_detections(im, class_name, dets, path, thresh=0.5):
@@ -81,16 +135,13 @@ def save_detections(im, class_name, dets, path, thresh=0.5):
     # print 'Saved Detections.'
 
 
-def get_detections(net, image_name):
+def get_detections(heat_map_obj, net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
     # Load the demo image
     im_file = os.path.join(cfg.DATA_DIR, 'demo', image_name)
     im = cv2.imread(im_file)
     image_name = image_name.split('.')[0]
-
-    # Path to store crops
-    crop_dest_location = os.path.join(cfg.DATA_DIR, 'detections', image_name)
 
     # Detect all object classes and regress object bounds
     timer = Timer()
@@ -101,21 +152,16 @@ def get_detections(net, image_name):
            '{:d} object proposals').format(timer.total_time, boxes.shape[0])
 
     # Visualize detections for each class
-    CONF_THRESH = 0.8
-    NMS_THRESH = 0.3
+    conf_threshold = 0.8
+    nms_threshold = 0.3
     for cls_ind, cls in enumerate(CLASSES[1:]):
         cls_ind += 1 # because we skipped background
         cls_boxes = boxes[:, 4:8]
         cls_scores = scores[:, cls_ind]
-        dets = np.hstack((cls_boxes,
-                          cls_scores[:, np.newaxis])).astype(np.float32)
-        keep = nms(dets, NMS_THRESH)
-        dets = dets[keep, :]
-        print 'Saving detections...'
-        save_detections(im, cls, dets, crop_dest_location, thresh=CONF_THRESH)
-        print 'Saving orignial'
-        vis_detections(im, cls, dets, image_name, thresh=CONF_THRESH)
-        print 'Saving orignial Done!'
+        detections = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
+        keep = nms(detections, nms_threshold)
+        detections = detections[keep, :]
+        plot_detections(heat_map_obj, im, cls, detections, image_name, thresh=conf_threshold)
 
 
 def parse_args():
@@ -159,19 +205,17 @@ if __name__ == '__main__':
     print '\n\nLoaded network {:s}'.format(caffemodel)
 
     hm = HeatMap()
-    print '\n\nLoaded VGG.'
+    print '\n\nLoaded VGG, for segmentation.'
 
     # Warmup on a dummy image
-    # im = 128 * np.ones((300, 500, 3), dtype=np.uint8)
-    # for i in xrange(2):
-    #     _, _= im_detect(net, im)
-    #
-    # im_names = ['bookstore_video0_9500.jpg']
-    #
-    # for im_name in im_names:
-    #     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-    #     print 'Demo for data/demo/{}'.format(im_name)
-    #     get_detections(net, im_name)
-    #
-    # plt.show()
+    img = 128 * np.ones((300, 500, 3), dtype=np.uint8)
+    for i in xrange(2):
+        _, _ = im_detect(net, img)
+
+    im_names = ['bookstore_video0_9500.jpg']
+
+    for im_name in im_names:
+        print 'Getting detections of data/demo/{}'.format(im_name)
+        get_detections(hm, net, im_name)
+
     print 'Done.'
