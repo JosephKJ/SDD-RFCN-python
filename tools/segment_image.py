@@ -49,9 +49,11 @@ def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, 
     for i in inds:
         bbox = dets[i, :4]
         score = dets[i, -1]
-        patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-        semantic_data = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
-        im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
+
+        if show_semantic_info:
+            patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+            semantic_data = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
+            im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
 
         bgr_img = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
         cv2.rectangle(bgr_img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), get_rgb_from_color(color_label[class_name])[::-1], 2)
