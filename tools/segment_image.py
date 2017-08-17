@@ -55,11 +55,6 @@ def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, 
         cv2.rectangle(bgr_img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (0, 255, 0), 1)
         im = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB)
 
-        # cv2.rectangle(im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (0, 255, 0), 3)
-        # cv2.rectangle(im, (int(bbox[1]), int(bbox[0])), (int(bbox[3]), int(bbox[2])), (0, 255, 0), 3)
-        # cv2.rectangle(im, (int(bbox[3]), int(bbox[2])), (int(bbox[1]), int(bbox[0])), (0, 255, 0), 3)
-        # cv2.rectangle(im, (int(bbox[2]), int(bbox[3])), (int(bbox[0]), int(bbox[1])), (0, 255, 0), 3)
-
     plt.imshow(im)
     plt.show()
     cv2.imwrite(os.path.join(cfg.DATA_DIR, 'full_images', 'kjj'+image_name+'_'+class_name+'.png'), cv2.cvtColor(im, cv2.COLOR_RGB2BGR))
