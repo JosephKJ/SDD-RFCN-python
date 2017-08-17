@@ -6,13 +6,11 @@ from map import HeatMap
 
 def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     """
-    Given an image, the objecness map will be returned.
-    Steps:
-        1. Create a Higher Resolution Image
-        2. Get objectness
-
-    :param image:
-    :return:
+    Generates the objectness confidence score, for a given image.
+    :param heatMapObj: An object of the heatmap Class
+    :param image: The image which should be processed
+    :param hr_method: optional, to so SR or not.
+    :return: binary_map: which contains the objectness info; filtered_image: which is the map applied to the image.
     """
     # 1. Create a Higher Resolution Image
     img = scipy.misc.imresize(image, 8.0, interp='bicubic')
@@ -30,11 +28,11 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     img_h, img_w, _ = image.shape
     if map_h > img_h:
         diff = map_h - img_h
-        binary_map = np.delete(binary_map, 1, axis=0)  # remove a row
+        binary_map = np.delete(binary_map, diff, axis=0)  # remove 'diff' rows
 
     if map_w > img_w:
         diff = map_w - img_w
-        binary_map = np.delete(binary_map, 1, axis=1)  # remove a column
+        binary_map = np.delete(binary_map, diff, axis=1)  # remove 'diff' columns
 
     # Expand the map to three channels
     three_channel_map = np.stack((binary_map, binary_map, binary_map), axis=2)
@@ -43,10 +41,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     filtered_image = image * three_channel_map
     filtered_image = filtered_image.astype(np.uint8)
 
-    # heatMapObj.display_image(image)
-    heatMapObj.display_image(filtered_image)
-
-    return img
+    return binary_map, filtered_image
 
 if __name__ == '__main__':
     print('Inside Main.')
@@ -58,4 +53,6 @@ if __name__ == '__main__':
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    generate_objectness_map(hm, img)
+    b_map, filtered_img = generate_objectness_map(hm, img)
+    hm.display_image(b_map)
+    hm.display_image(filtered_img)
