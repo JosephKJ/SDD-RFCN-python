@@ -35,6 +35,7 @@ def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, 
     :param show_semantic_info:
     :return:
     """
+
     color_label = {'pedestrian': 'red', 'biker': 'green', 'skater': 'blue',
                    'car': 'black', 'bus': 'white', 'cart': 'violet'}
 
@@ -50,9 +51,18 @@ def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, 
         semantic_data = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
         im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
 
+        bgr_img = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
+        cv2.rectangle(bgr_img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (0, 255, 0), 1)
+        im = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB)
+
+        # cv2.rectangle(im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (0, 255, 0), 3)
+        # cv2.rectangle(im, (int(bbox[1]), int(bbox[0])), (int(bbox[3]), int(bbox[2])), (0, 255, 0), 3)
+        # cv2.rectangle(im, (int(bbox[3]), int(bbox[2])), (int(bbox[1]), int(bbox[0])), (0, 255, 0), 3)
+        # cv2.rectangle(im, (int(bbox[2]), int(bbox[3])), (int(bbox[0]), int(bbox[1])), (0, 255, 0), 3)
+
     plt.imshow(im)
     plt.show()
-    cv2.imwrite(os.path.join(cfg.DATA_DIR, 'full_images', 'kjj'+image_name+'_'+class_name+'.png'), cv2.cvtColor(map, cv2.COLOR_RGB2BGR))
+    cv2.imwrite(os.path.join(cfg.DATA_DIR, 'full_images', 'kjj'+image_name+'_'+class_name+'.png'), cv2.cvtColor(im, cv2.COLOR_RGB2BGR))
 
 
 def plot_detections_old(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, show_semantic_info=True):
@@ -113,7 +123,7 @@ def save_detections(im, class_name, dets, path, thresh=0.5):
         score = dets[i, -1]
         print bbox
         patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-        map = generate_objectness_map(patch)
+        # map = generate_objectness_map(patch)
         fname = path + '_' + class_name + '_' + str(i) + '.png'
         cv2.imwrite(fname, cv2.cvtColor(patch, cv2.COLOR_RGB2BGR))
         fname = path + '_hr_bc_' + class_name + '_' + str(i) + '.png'
