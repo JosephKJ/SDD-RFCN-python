@@ -60,74 +60,6 @@ def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, 
     cv2.imwrite(os.path.join(cfg.DATA_DIR, 'full_images', 'kjj'+image_name+'_'+class_name+'.png'), cv2.cvtColor(im, cv2.COLOR_RGB2BGR))
 
 
-def plot_detections_old(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, show_semantic_info=True):
-    """
-
-    :param heat_map_obj:
-    :param im:
-    :param class_name:
-    :param dets:
-    :param image_name:
-    :param thresh:
-    :param show_semantic_info:
-    :return:
-    """
-    inds = np.where(dets[:, -1] >= thresh)[0]
-    if len(inds) == 0:
-        return
-    im = im[:, :, (2, 1, 0)]
-    print im.shape
-    fig, ax = plt.subplots(figsize=(12, 12))
-    ax.imshow(im, aspect='equal')
-    for i in inds:
-        bbox = dets[i, :4]
-        score = dets[i, -1]
-
-        ax.add_patch(
-            plt.Rectangle((bbox[0], bbox[1]),
-                          bbox[2] - bbox[0],
-                          bbox[3] - bbox[1], fill=False,
-                          edgecolor='red', linewidth=3.5)
-            )
-        ax.text(bbox[0], bbox[1] - 2,
-                '{:s} {:.3f}'.format(class_name+'_'+str(i), score),
-                bbox=dict(facecolor='blue', alpha=0.5),fontsize=14, color='white')
-
-    ax.set_title('{} detections with p({} | box) >= {:.1f}'.format(class_name, class_name,thresh),fontsize=14)
-
-    # plt.axis('off')
-    # plt.tight_layout()
-    # plt.draw()
-    # plt.show()
-
-    # plt.savefig(os.path.join(cfg.DATA_DIR, 'full_images', image_name+'_'+class_name+'.png'))
-    # plt.close(fig)
-
-
-def save_detections(im, class_name, dets, path, thresh=0.5):
-    """Save the detected bounding boxes."""
-    inds = np.where(dets[:, -1] >= thresh)[0]
-    if len(inds) == 0:
-        return
-    im = im[:, :, (2, 1, 0)]
-
-    # print 'Saving Detections.'
-
-    for i in inds:
-        bbox = dets[i, :4]
-        score = dets[i, -1]
-        print bbox
-        patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-        # map = generate_objectness_map(patch)
-        fname = path + '_' + class_name + '_' + str(i) + '.png'
-        cv2.imwrite(fname, cv2.cvtColor(patch, cv2.COLOR_RGB2BGR))
-        fname = path + '_hr_bc_' + class_name + '_' + str(i) + '.png'
-        cv2.imwrite(fname, cv2.cvtColor(map, cv2.COLOR_RGB2BGR))
-        # break
-
-    # print 'Saved Detections.'
-
-
 def get_detections(heat_map_obj, net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
@@ -155,7 +87,6 @@ def get_detections(heat_map_obj, net, image_name):
         keep = nms(detections, nms_threshold)
         detections = detections[keep, :]
         plot_detections(heat_map_obj, im, cls, detections, image_name, thresh=conf_threshold)
-        break
 
 
 def parse_args():
