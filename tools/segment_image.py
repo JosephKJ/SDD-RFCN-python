@@ -24,44 +24,53 @@ CLASSES = ('__background__','pedestrian', 'biker', 'skater', 'car', 'bus', 'cart
 NETS = {'SDD': ('ResNet-101','resnet101_rfcn_ohem_iter_110000.caffemodel')}
 
 
-def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, show_semantic_info=True):
-    """
-    Plot the semantic segmentation information and the detections
-    :param heat_map_obj:
-    :param im:
-    :param class_name:
-    :param dets:
-    :param image_name:
-    :param thresh:
-    :param show_semantic_info:
-    :return:
-    """
+class Detections:
+    def __init__(self, image):
+        image = image[:, :, (2, 1, 0)]
+        self.image = image
 
-    color_label = {'pedestrian': 'red', 'biker': 'green', 'skater': 'blue',
-                   'car': 'black', 'bus': 'white', 'cart': 'violet'}
+    def plot(self, heat_map_obj, class_name, dets, image_name, thresh=0.5, show_semantic_info=True, show_detection_info=True):
+        """
+        Plot the semantic segmentation information and the detections
+        :param heat_map_obj:
+        :param class_name:
+        :param dets:
+        :param image_name:
+        :param thresh:
+        :param show_semantic_info:
+        :return:
+        """
 
-    inds = np.where(dets[:, -1] >= thresh)[0]
-    if len(inds) == 0:
-        return
+        color_label = {'pedestrian': 'red', 'biker': 'green', 'skater': 'blue',
+                       'car': 'black', 'bus': 'white', 'cart': 'violet'}
 
-    im = im[:, :, (2, 1, 0)]
+        inds = np.where(dets[:, -1] >= thresh)[0]
+        if len(inds) == 0:
+            return
 
-    for i in inds:
-        bbox = dets[i, :4]
-        score = dets[i, -1]
+        for i in inds:
+            bbox = dets[i, :4]
+            score = dets[i, -1]
 
-        if show_semantic_info:
-            patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-            semantic_data = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
-            im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
+            if show_semantic_info:
+                patch = self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+                semantic_data = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
+                self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
 
-        bgr_img = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
-        cv2.rectangle(bgr_img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), get_rgb_from_color(color_label[class_name])[::-1], 2)
-        im = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB)
+            if show_detection_info:
+                bgr_img = cv2.cvtColor(self.image, cv2.COLOR_RGB2BGR)
+                cv2.rectangle(bgr_img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), get_rgb_from_color(color_label[class_name])[::-1], 2)
+                self.image = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB)
 
-    plt.imshow(im)
-    plt.show()
-    # cv2.imwrite(os.path.join(cfg.DATA_DIR, 'full_images', 'kjj'+image_name+'_'+class_name+'.png'), cv2.cvtColor(im, cv2.COLOR_RGB2BGR))
+    def get_image(self):
+        return self.image
+
+    def save_image(self, path):
+        cv2.imwrite(path, cv2.cvtColor(self.image, cv2.COLOR_RGB2BGR))
+
+    def show_image(self):
+        plt.imshow(self.image)
+        plt.show()
 
 
 def get_detections(heat_map_obj, net, image_name):
@@ -83,14 +92,18 @@ def get_detections(heat_map_obj, net, image_name):
     # Visualize detections for each class
     conf_threshold = 0.8
     nms_threshold = 0.3
+    detection_object = Detections(im)
     for cls_ind, cls in enumerate(CLASSES[1:]):
+        print 'Plotting ', cls
         cls_ind += 1 # because we skipped background
         cls_boxes = boxes[:, 4:8]
         cls_scores = scores[:, cls_ind]
         detections = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(detections, nms_threshold)
         detections = detections[keep, :]
-        plot_detections(heat_map_obj, im, cls, detections, image_name, thresh=conf_threshold)
+        detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False)
+
+    detection_object.show_image()
 
 
 def parse_args():
