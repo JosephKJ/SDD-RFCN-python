@@ -53,7 +53,7 @@ def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, 
         im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
 
         bgr_img = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
-        cv2.rectangle(bgr_img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), get_rgb_from_color(color_label[class_name]), 1)
+        cv2.rectangle(bgr_img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), get_rgb_from_color(color_label[class_name])[::-1], 1)
         im = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB)
 
     plt.imshow(im)
