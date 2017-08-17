@@ -57,7 +57,7 @@ def plot_detections(heat_map_obj, im, class_name, dets, image_name, thresh=0.5, 
 
     plt.imshow(im)
     plt.show()
-    cv2.imwrite(os.path.join(cfg.DATA_DIR, 'full_images', 'kjj'+image_name+'_'+class_name+'.png'), cv2.cvtColor(im, cv2.COLOR_RGB2BGR))
+    # cv2.imwrite(os.path.join(cfg.DATA_DIR, 'full_images', 'kjj'+image_name+'_'+class_name+'.png'), cv2.cvtColor(im, cv2.COLOR_RGB2BGR))
 
 
 def get_detections(heat_map_obj, net, image_name):
@@ -96,7 +96,7 @@ def parse_args():
     """
     parser = argparse.ArgumentParser(description='Segment images from SDD.')
     parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]',
-                        default=0, type=int)
+                        default=5, type=int)
     parser.add_argument('--cpu', dest='cpu_mode',
                         help='Use CPU mode (overrides --gpu)',
                         action='store_true')

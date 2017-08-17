@@ -39,7 +39,7 @@ class HeatMap:
 
         # Performing Forward Pass
         net = self.net
-        net.blobs['data'].reshape(10, 3, image_shape[0], image_shape[1])
+        net.blobs['data'].reshape(1, 3, image_shape[0], image_shape[1])
         net.blobs['data'].data[...] = transformed_image
         output = net.forward()
 
