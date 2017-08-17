@@ -48,9 +48,6 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
 
 
 def semantic_segment_image(heatMapObj, image, color='red'):
-    colors = {'red': (255, 83, 26), 'green': (26, 255, 83), 'blue': (26, 140, 255),
-              'black': (77, 0, 77), 'white': (230, 230, 230), 'violet': (255, 26, 255)}
-
     # Getting the objectness
     binary_map, negative_binary_map, filtered_image = generate_objectness_map(heatMapObj, image)
 
@@ -59,12 +56,19 @@ def semantic_segment_image(heatMapObj, image, color='red'):
     background = (image * three_channel_map).astype(np.uint8)
 
     # Segmentation Foreground
-    r,g,b = colors[color]
+    r,g,b = get_RGB_from_color(color)
     foreground = np.stack((binary_map*r, binary_map*g, binary_map*b), axis=2).astype(np.uint8)
 
     # Combined Image
     full_image = background + foreground
     return full_image
+
+
+def get_rgb_from_color(color):
+    colors = {'red': (255, 83, 26), 'green': (26, 255, 83), 'blue': (26, 140, 255),
+              'black': (77, 0, 77), 'white': (230, 230, 230), 'violet': (255, 26, 255)}
+    return colors[color];
+
 
 if __name__ == '__main__':
     print('Inside Main.')
