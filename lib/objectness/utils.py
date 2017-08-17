@@ -22,6 +22,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     heat_map = heatMapObj.get_map(img)
     min_pixel_intensity = heat_map.min()
     binary_map = np.where(heat_map > min_pixel_intensity, 1, 0)
+    negative_binary_map = np.where(heat_map > min_pixel_intensity, 0, 1)
 
     # Trim off any extra rows in the map
     map_h, map_w = binary_map.shape
@@ -29,10 +30,12 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     if map_h > img_h:
         diff = map_h - img_h
         binary_map = np.delete(binary_map, diff, axis=0)  # remove 'diff' rows
+        negative_binary_map = np.delete(negative_binary_map, diff, axis=0)  # remove 'diff' rows
 
     if map_w > img_w:
         diff = map_w - img_w
         binary_map = np.delete(binary_map, diff, axis=1)  # remove 'diff' columns
+        negative_binary_map = np.delete(negative_binary_map, diff, axis=1)  # remove 'diff' columns
 
     # Expand the map to three channels
     three_channel_map = np.stack((binary_map, binary_map, binary_map), axis=2)
@@ -41,7 +44,27 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     filtered_image = image * three_channel_map
     filtered_image = filtered_image.astype(np.uint8)
 
-    return binary_map, filtered_image
+    return binary_map, negative_binary_map, filtered_image
+
+
+def semantic_segment_image(heatMapObj, image, color='red'):
+    colors = {'red': (255, 83, 26), 'green': (26, 255, 83), 'blue': (26, 140, 255),
+              'black': (77, 0, 77), 'white': (230, 230, 230), 'violet': (255, 26, 255)}
+
+    # Getting the objectness
+    binary_map, negative_binary_map, filtered_image = generate_objectness_map(heatMapObj, image)
+
+    # Calculating the background
+    three_channel_map = np.stack((negative_binary_map, negative_binary_map, negative_binary_map), axis=2)
+    background = (image * three_channel_map).astype(np.uint8)
+
+    # Segmentation Foreground
+    r,g,b = colors[color]
+    foreground = np.stack((binary_map*r, binary_map*g, binary_map*b), axis=2).astype(np.uint8)
+
+    # Combined Image
+    full_image = background + foreground
+    hm.display_image(full_image)
 
 if __name__ == '__main__':
     print('Inside Main.')
@@ -53,6 +76,9 @@ if __name__ == '__main__':
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    b_map, filtered_img = generate_objectness_map(hm, img)
-    hm.display_image(b_map)
-    hm.display_image(filtered_img)
+    semantic_segment_image(hm, img, 'red')
+    semantic_segment_image(hm, img, 'green')
+    semantic_segment_image(hm, img, 'blue')
+    semantic_segment_image(hm, img, 'black')
+    semantic_segment_image(hm, img, 'white')
+    semantic_segment_image(hm, img, 'violet')
