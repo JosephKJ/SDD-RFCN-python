@@ -13,6 +13,9 @@ set -e
 
 export PYTHONUNBUFFERED="True"
 
+echo "Starting process"
+date
+
 GPU_ID=$1
 NET=$2
 NET_lc=${NET,,}
@@ -34,7 +37,7 @@ case $DATASET in
     TRAIN_IMDB="voc_2007_trainval+voc_2012_trainval"
     TEST_IMDB="voc_0712_test"
     PT_DIR="pascal_voc"
-    ITERS=110000
+    ITERS=1
     ;;
   coco)
     # This is a very long and slow training schedule
@@ -69,9 +72,15 @@ set +x
 NET_FINAL=`tail -n 100 ${LOG} | grep -B 1 "done solving" | grep "Wrote snapshot" | awk '{print $4}'`
 set -x
 
+echo "Done Training"
+date
+
 time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/rfcn_end2end/test_agnostic.prototxt \
   --net ${NET_FINAL} \
   --imdb ${TEST_IMDB} \
   --cfg experiments/cfgs/rfcn_end2end_ohem.yml \
   ${EXTRA_ARGS}
+
+echo "Done Testing"
+date
