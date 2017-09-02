@@ -26,6 +26,13 @@ len=${#array[@]}
 EXTRA_ARGS=${array[@]:3:$len}
 EXTRA_ARGS_SLUG=${EXTRA_ARGS// /_}
 
+#pascal_voc)
+#    TRAIN_IMDB="voc_2007_trainval+voc_2012_trainval"
+#    TEST_IMDB="voc_0712_test"
+#    PT_DIR="pascal_voc"
+#    ITERS=1
+#    ;;
+
 case $DATASET in
   sdd)
     TRAIN_IMDB="sdd_trainval"
@@ -34,8 +41,8 @@ case $DATASET in
     ITERS=110000
     ;;
   pascal_voc)
-    TRAIN_IMDB="voc_2007_trainval+voc_2012_trainval"
-    TEST_IMDB="voc_0712_test"
+    TRAIN_IMDB="voc_2007_trainval"
+    TEST_IMDB="voc_07_test"
     PT_DIR="pascal_voc"
     ITERS=1
     ;;
