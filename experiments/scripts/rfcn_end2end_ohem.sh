@@ -42,7 +42,7 @@ case $DATASET in
     ;;
   pascal_voc)
     TRAIN_IMDB="voc_2007_trainval"
-    TEST_IMDB="voc_0712_test"
+    TEST_IMDB="voc_2007_test"
     PT_DIR="pascal_voc"
     ITERS=1
     ;;
