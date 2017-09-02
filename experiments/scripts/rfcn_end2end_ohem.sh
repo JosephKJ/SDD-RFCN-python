@@ -15,6 +15,7 @@ export PYTHONUNBUFFERED="True"
 
 echo "Starting process"
 date
+date +%s
 
 GPU_ID=$1
 NET=$2
@@ -81,6 +82,7 @@ set -x
 
 echo "Done Training"
 date
+date +%s
 
 time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/rfcn_end2end/test_agnostic.prototxt \
@@ -91,3 +93,4 @@ time ./tools/test_net.py --gpu ${GPU_ID} \
 
 echo "Done Testing"
 date
+date +%s
