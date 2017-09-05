@@ -28,6 +28,7 @@ class Detections:
     def __init__(self, image):
         image = image[:, :, (2, 1, 0)]
         self.image = image
+        self.ious = []
 
     def plot(self, heat_map_obj, class_name, dets, image_name, thresh=0.5, show_semantic_info=True, show_detection_info=True):
         """
@@ -56,7 +57,7 @@ class Detections:
                 patch = self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
                 semantic_data, iou = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
                 self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
-                print iou
+                self.ious.push(iou)
 
             if show_detection_info:
                 bgr_img = cv2.cvtColor(self.image, cv2.COLOR_RGB2BGR)
@@ -72,6 +73,9 @@ class Detections:
     def show_image(self):
         plt.imshow(self.image)
         plt.show()
+
+    def get_mean_iou(self):
+        return np.mean(self.ious)
 
 
 def get_detections(heat_map_obj, net, image_name):
@@ -105,6 +109,7 @@ def get_detections(heat_map_obj, net, image_name):
         detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False)
 
     detection_object.show_image()
+    print 'Mean IoU:', detection_object.get_mean_iou()
     # detection_object.save_image('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/full_images/semantic_det_'+image_name+'.png')
 
 
