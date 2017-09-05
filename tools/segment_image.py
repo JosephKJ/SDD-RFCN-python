@@ -54,8 +54,9 @@ class Detections:
 
             if show_semantic_info:
                 patch = self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-                semantic_data = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
+                semantic_data, iou = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
                 self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
+                print iou
 
             if show_detection_info:
                 bgr_img = cv2.cvtColor(self.image, cv2.COLOR_RGB2BGR)

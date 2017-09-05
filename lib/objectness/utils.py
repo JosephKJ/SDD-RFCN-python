@@ -3,6 +3,8 @@ import os
 import cv2
 import numpy as np
 from map import HeatMap
+from sklearn.metrics import jaccard_similarity_score
+
 
 def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     """
@@ -37,6 +39,9 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
         binary_map = np.delete(binary_map, diff, axis=1)  # remove 'diff' columns
         negative_binary_map = np.delete(negative_binary_map, diff, axis=1)  # remove 'diff' columns
 
+    # Calculate the IoU
+    iou = findIoU(image, binary_map)
+
     # Expand the map to three channels
     three_channel_map = np.stack((binary_map, binary_map, binary_map), axis=2)
 
@@ -44,12 +49,27 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     filtered_image = image * three_channel_map
     filtered_image = filtered_image.astype(np.uint8)
 
-    return binary_map, negative_binary_map, filtered_image
+    return binary_map, negative_binary_map, filtered_image, iou
 
+
+def findIoU(image, preditiction):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Otsu's Threshholding
+    ret, thresh = cv2.threshold(gray, 0, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+    # Noise removal
+    kernel = np.ones((2, 2), np.uint8)
+    opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
+
+    gt = opening.flatten()
+    mask = preditiction.flatten()
+    iou = jaccard_similarity_score(gt, mask)
+    return iou
 
 def semantic_segment_image(heatMapObj, image, color='red'):
     # Getting the objectness
-    binary_map, negative_binary_map, filtered_image = generate_objectness_map(heatMapObj, image)
+    binary_map, negative_binary_map, filtered_image, iou = generate_objectness_map(heatMapObj, image)
 
     # Calculating the background
     three_channel_map = np.stack((negative_binary_map, negative_binary_map, negative_binary_map), axis=2)
@@ -61,7 +81,7 @@ def semantic_segment_image(heatMapObj, image, color='red'):
 
     # Combined Image
     full_image = background + foreground
-    return full_image
+    return full_image, iou
 
 
 def get_rgb_from_color(color):
