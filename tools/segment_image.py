@@ -115,7 +115,7 @@ def parse_args():
     """
     parser = argparse.ArgumentParser(description='Segment images from SDD.')
     parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]',
-                        default=5, type=int)
+                        default=0, type=int)
     parser.add_argument('--cpu', dest='cpu_mode',
                         help='Use CPU mode (overrides --gpu)',
                         action='store_true')
