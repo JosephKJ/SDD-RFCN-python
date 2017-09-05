@@ -103,8 +103,8 @@ def get_detections(heat_map_obj, net, image_name):
         detections = detections[keep, :]
         detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False)
 
-    # detection_object.show_image()
-    detection_object.save_image('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/full_images/det_'+image_name+'.png')
+    detection_object.show_image()
+    detection_object.save_image('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/full_images/semantic_det_'+image_name+'.png')
 
 
 def parse_args():
@@ -155,16 +155,16 @@ if __name__ == '__main__':
     for i in xrange(2):
         _, _ = im_detect(net, img)
 
-    # im_names = ['bookstore_video0_9500.jpg']
-    # for im_name in im_names:
-    #     print 'Getting detections of {}'.format(im_name)
-    #     get_detections(hm, net, im_name)
+    im_names = ['bookstore_video0_9500.jpg']
+    for im_name in im_names:
+        print 'Getting detections of {}'.format(im_name)
+        get_detections(hm, net, im_name)
 
-    from_frameno = 9000
-    to_frameno = 10000
-    for i in range(from_frameno, to_frameno):
-        img_name = 'bookstore_video0_' + str(i) + '.jpg'
-        print 'Getting detections of ', img_name
-        get_detections(hm, net, img_name)
+    # from_frameno = 9000
+    # to_frameno = 10000
+    # for i in range(from_frameno, to_frameno):
+    #     img_name = 'bookstore_video0_' + str(i) + '.jpg'
+    #     print 'Getting detections of ', img_name
+    #     get_detections(hm, net, img_name)
 
     print 'Done.'
