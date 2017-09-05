@@ -103,7 +103,7 @@ def get_detections(heat_map_obj, net, image_name):
         detections = detections[keep, :]
         detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False)
 
-    detection_object.show_image()
+    # detection_object.show_image()
     detection_object.save_image('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/full_images/semantic_det_'+image_name+'.png')
 
 
