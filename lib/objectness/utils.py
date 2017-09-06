@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from map import HeatMap
 from sklearn.metrics import jaccard_similarity_score
+from timer import Timer
 
 
 def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
@@ -21,7 +22,12 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
         pass
 
     # 2. Get objectness
+    timer = Timer()
+    timer.tic()
     heat_map = heatMapObj.get_map(img)
+    timer.toc()
+    # print 'Heatmap genetation took {:.3f}s '.format(timer.total_time)
+    # print timer.total_time
     min_pixel_intensity = heat_map.min()
     binary_map = np.where(heat_map > min_pixel_intensity, 1, 0)
     negative_binary_map = np.where(heat_map > min_pixel_intensity, 0, 1)

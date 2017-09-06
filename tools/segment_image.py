@@ -58,7 +58,7 @@ class Detections:
                 patch = self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
                 semantic_data, iou, obj_score = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
                 # if obj_score > .1 and iou > .2:
-                if obj_score > .3:
+                if obj_score > .2:
                     self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
                     self.ious.append(iou)
                     self.obj_scores.append(obj_score)
@@ -105,6 +105,8 @@ def get_detections(heat_map_obj, net, image_name):
     # Visualize detections for each class
     conf_threshold = 0.8
     nms_threshold = 0.3
+    timer = Timer()
+    timer.tic()
     detection_object = Detections(im)
     for cls_ind, cls in enumerate(CLASSES[1:]):
         print 'Plotting ', cls
@@ -114,10 +116,11 @@ def get_detections(heat_map_obj, net, image_name):
         detections = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(detections, nms_threshold)
         detections = detections[keep, :]
-        detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False)
-
+        detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False, show_semantic_info=True)
+    timer.toc()
+    print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)
     # detection_object.show_image()
-    print 'Mean IoU:', detection_object.get_mean_iou()
+    # print 'Mean IoU:', detection_object.get_mean_iou()
     detection_object.save_image('/home/joseph/semantic_det_'+image_name+'.png')
 
 
