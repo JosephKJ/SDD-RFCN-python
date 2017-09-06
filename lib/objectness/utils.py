@@ -39,8 +39,22 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
         binary_map = np.delete(binary_map, diff, axis=1)  # remove 'diff' columns
         negative_binary_map = np.delete(negative_binary_map, diff, axis=1)  # remove 'diff' columns
 
+    # Remove the border in the detections
+    border = 2
+    temp = np.zeros_like(binary_map)
+    temp[border:-border, border:-border] = binary_map[border:-border, border:-border]
+    binary_map = temp
+    temp = np.ones_like(negative_binary_map)
+    temp[border:-border, border:-border] = negative_binary_map[border:-border, border:-border]
+    negative_binary_map = temp
+
     # Calculate the IoU
     iou = findIoU(image, binary_map)
+
+    # Calculate objectness score
+    # It is the percentage of pixels that are not black
+    h, w = binary_map.shape
+    obj_score = np.count_nonzero(binary_map) / (w * h * 1.)
 
     # Expand the map to three channels
     three_channel_map = np.stack((binary_map, binary_map, binary_map), axis=2)
@@ -49,7 +63,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     filtered_image = image * three_channel_map
     filtered_image = filtered_image.astype(np.uint8)
 
-    return binary_map, negative_binary_map, filtered_image, iou
+    return binary_map, negative_binary_map, filtered_image, iou, obj_score
 
 
 def findIoU(image, preditiction):
@@ -59,17 +73,17 @@ def findIoU(image, preditiction):
     ret, thresh = cv2.threshold(gray, 0, 1, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
     # Noise removal
-    kernel = np.ones((2, 2), np.uint8)
-    opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
+    # kernel = np.ones((2, 2), np.uint8)
+    # opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
 
-    gt = opening.flatten()
+    gt = thresh.flatten()
     mask = preditiction.flatten()
     iou = jaccard_similarity_score(gt, mask)
     return iou
 
 def semantic_segment_image(heatMapObj, image, color='red'):
     # Getting the objectness
-    binary_map, negative_binary_map, filtered_image, iou = generate_objectness_map(heatMapObj, image)
+    binary_map, negative_binary_map, filtered_image, iou, obj_score = generate_objectness_map(heatMapObj, image)
 
     # Calculating the background
     three_channel_map = np.stack((negative_binary_map, negative_binary_map, negative_binary_map), axis=2)
@@ -81,7 +95,7 @@ def semantic_segment_image(heatMapObj, image, color='red'):
 
     # Combined Image
     full_image = background + foreground
-    return full_image, iou
+    return full_image, iou, obj_score
 
 
 def get_rgb_from_color(color):
