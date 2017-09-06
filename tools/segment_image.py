@@ -118,7 +118,7 @@ def get_detections(heat_map_obj, net, image_name):
         detections = detections[keep, :]
         detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False, show_semantic_info=True)
     timer.toc()
-    print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)
+    # print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)
     # detection_object.show_image()
     # print 'Mean IoU:', detection_object.get_mean_iou()
     detection_object.save_image('/home/joseph/semantic_det_'+image_name+'.png')
