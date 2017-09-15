@@ -249,7 +249,8 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False, refine=Tru
 
     det_file = os.path.join(output_dir, 'detections.pkl')
 
-    if not os.path.exists(det_file):
+    # if not os.path.exists(det_file):
+    if True: # Forcing recomputation.
         for i in xrange(num_images):
             # filter out any ground truth boxes
             if cfg.TEST.HAS_RPN:
@@ -269,6 +270,8 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False, refine=Tru
 
             _t['misc'].tic()
             # skip j = 0, because it's the background class
+            skip_counter = 0
+            add_counter = 0
             for j in xrange(1, imdb.num_classes):
                 inds = np.where(scores[:, j] > thresh)[0]
                 cls_scores = scores[inds, j]
@@ -289,8 +292,13 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False, refine=Tru
                     _, iou, obj_score = semantic_segment_image(hm, patch, 'red')
                     if obj_score > .1 and iou > .2:
                         all_boxes[j][i] = cls_dets
+                        add_counter += 1
+                    else:
+                        skip_counter += 1
                 else:
                     all_boxes[j][i] = cls_dets
+            print 'Eleminated ', skip_counter, '. Retained ', add_counter, ' elements.'
+            print 'Shape of all_boxes: ', np.array(all_boxes).shape
 
             # Limit to max_per_image detections *over all classes*
             if max_per_image > 0:
