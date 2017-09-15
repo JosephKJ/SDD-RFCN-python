@@ -23,11 +23,17 @@ class HeatMap:
         elif arch == 'VGG16':
             model_def = os.path.join(os.path.dirname(__file__), 'networks/VGG_ILSVRC_16_layers_conv_only.prototxt')
             model_weights = os.path.join(os.path.dirname(__file__), 'networks/VGG_ILSVRC_16_layers.caffemodel')
+        elif arch == 'ResNet-50':
+            model_def = os.path.join(os.path.dirname(__file__), 'networks/ResNet-50-deploy.prototxt')
+            model_weights = os.path.join(os.path.dirname(__file__), 'networks/ResNet-50-model.caffemodel')
+        elif arch == 'ResNet-101':
+            model_def = os.path.join(os.path.dirname(__file__), 'networks/ResNet-101-deploy.prototxt')
+            model_weights = os.path.join(os.path.dirname(__file__), 'networks/ResNet-101-model.caffemodel')
 
         self.net = caffe.Net(model_def, model_weights, caffe.TEST)
         self.arch = arch
 
-    def get_map(self, image, verbose=False):
+    def get_map(self, image, verbose=False, layer_name='res3a'):
 
         image_shape = image.shape
 
@@ -48,6 +54,10 @@ class HeatMap:
             feat = net.blobs['conv5'].data[0]
         elif self.arch == 'VGG16':
             feat = net.blobs['conv5_3'].data[0]
+        elif self.arch == 'ResNet-50':
+            feat = net.blobs[layer_name].data[0]
+        elif self.arch == 'ResNet-101':
+            feat = net.blobs[layer_name].data[0]
 
         # Generating the mask
         feature_sum = np.sum(feat, axis=0)
@@ -67,6 +77,9 @@ class HeatMap:
 
     def display_image(self, image):
         # plt.axis('off')
+        frame1 = plt.gca()
+        frame1.axes.get_xaxis().set_ticks([])
+        frame1.axes.get_yaxis().set_ticks([])
         plt.imshow(image)
         plt.show()
 
@@ -80,8 +93,11 @@ if __name__ == '__main__':
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     hMap = hm.get_map(img, verbose=True)
-    print 'Shape of the map', hMap.shape
     hm.display_image(hMap)
+
+    # for i in range(1, 4):
+    #     hMap = hm.get_map(img, verbose=True, layer_name='res3b'+str(i))
+    #     hm.display_image(hMap)
 
     # for index in range(0, 23):
     #     image_path = os.path.join(

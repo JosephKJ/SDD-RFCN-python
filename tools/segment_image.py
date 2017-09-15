@@ -75,6 +75,9 @@ class Detections:
         cv2.imwrite(path, cv2.cvtColor(self.image, cv2.COLOR_RGB2BGR))
 
     def show_image(self):
+        frame = plt.gca()
+        frame.axes.get_xaxis().set_ticks([])
+        frame.axes.get_yaxis().set_ticks([])
         plt.imshow(self.image)
         plt.show()
 
@@ -173,6 +176,8 @@ if __name__ == '__main__':
         _, _ = im_detect(net, img)
 
     im_names = ['bookstore_video0_9500.jpg']
+    # im_names = ['nexus_video1_9982.jpg']
+    # im_names = ['little_video1_1750.jpg']
     for im_name in im_names:
         print 'Getting detections of {}'.format(im_name)
         get_detections(hm, net, im_name)
