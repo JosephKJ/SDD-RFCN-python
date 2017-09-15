@@ -92,4 +92,4 @@ if __name__ == '__main__':
         if cfg.TEST.PROPOSAL_METHOD == 'rpn':
             imdb.config['rpn_file'] = args.rpn_file
 
-    test_net(net, imdb, max_per_image=args.max_per_image, vis=args.vis)
+    test_net(net, imdb, max_per_image=args.max_per_image, vis=args.vis, refine=True)

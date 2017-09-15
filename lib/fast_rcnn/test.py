@@ -18,6 +18,9 @@ from fast_rcnn.nms_wrapper import nms
 import cPickle
 from utils.blob import im_list_to_blob
 import os
+from objectness.map import HeatMap
+from objectness.utils import semantic_segment_image
+
 
 def _get_image_blob(im):
     """Converts an image into a network input.
@@ -224,7 +227,7 @@ def apply_nms(all_boxes, thresh):
             nms_boxes[cls_ind][im_ind] = dets[keep, :].copy()
     return nms_boxes
 
-def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False):
+def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False, refine=True):
     """Test a Fast R-CNN network on an image database."""
     num_images = len(imdb.image_index)
     # all detections are collected into:
@@ -234,6 +237,9 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False):
                  for _ in xrange(imdb.num_classes)]
 
     output_dir = get_output_dir(imdb, net)
+
+    # Heatmap image
+    hm = HeatMap()
 
     # timers
     _t = {'im_detect' : Timer(), 'misc' : Timer()}
@@ -276,7 +282,15 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False):
                 cls_dets = cls_dets[keep, :]
                 if vis:
                     vis_detections(im, imdb.classes[j], cls_dets)
-                all_boxes[j][i] = cls_dets
+
+                if refine:
+                    bbox = cls_dets[i, :4]
+                    patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+                    _, iou, obj_score = semantic_segment_image(hm, patch, 'red')
+                    if obj_score > .1 and iou > .2:
+                        all_boxes[j][i] = cls_dets
+                else:
+                    all_boxes[j][i] = cls_dets
 
             # Limit to max_per_image detections *over all classes*
             if max_per_image > 0:
