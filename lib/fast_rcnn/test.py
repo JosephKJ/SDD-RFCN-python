@@ -287,16 +287,19 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False, refine=Tru
                     vis_detections(im, imdb.classes[j], cls_dets)
 
                 if refine:
-                    bbox = cls_dets[i, :4]
-                    patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-                    _, iou, obj_score = semantic_segment_image(hm, patch, 'red')
-                    if obj_score > .1 and iou > .2:
-                        all_boxes[j][i] = cls_dets
-                        add_counter += 1
-                    else:
-                        skip_counter += 1
-                else:
-                    all_boxes[j][i] = cls_dets
+                    print "cls_dets.shape ", cls_dets.shape
+                    for index in range(0, len(cls_dets)):
+                        bbox = cls_dets[index, :4]
+                        patch = im[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+                        _, iou, obj_score = semantic_segment_image(hm, patch, 'red')
+                        if obj_score > .1 and iou > .2:
+                            add_counter += 1
+                        else:
+                            skip_counter += 1
+                            np.delete(cls_dets, index)
+                    print "cls_dets.shape ", cls_dets.shape
+                all_boxes[j][i] = cls_dets
+
             print 'Eleminated ', skip_counter, '. Retained ', add_counter, ' elements.'
             print 'Shape of all_boxes: ', np.array(all_boxes).shape
 
