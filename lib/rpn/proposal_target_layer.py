@@ -56,7 +56,7 @@ class ProposalTargetLayer(caffe.Layer):
                 'Only single item batches are supported'
 
         rois_per_image = np.inf if cfg.TRAIN.BATCH_SIZE == -1 else cfg.TRAIN.BATCH_SIZE
-        fg_rois_per_image = np.round(cfg.TRAIN.FG_FRACTION * rois_per_image)
+        fg_rois_per_image = np.round(cfg.TRAIN.FG_FRACTION * rois_per_image).astype(np.int)
 
         # Sample rois with classification labels and bounding box regression
         # targets
