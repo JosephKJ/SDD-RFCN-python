@@ -300,8 +300,8 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False, refine=Fal
                     print "cls_dets.shape after", cls_dets.shape
                 all_boxes[j][i] = cls_dets
 
-            print 'Eleminated ', skip_counter, '. Retained ', add_counter, ' elements.'
-            print 'Shape of all_boxes: ', np.array(all_boxes).shape
+            # print 'Eleminated ', skip_counter, '. Retained ', add_counter, ' elements.'
+            # print 'Shape of all_boxes: ', np.array(all_boxes).shape
 
             # Limit to max_per_image detections *over all classes*
             if max_per_image > 0:
