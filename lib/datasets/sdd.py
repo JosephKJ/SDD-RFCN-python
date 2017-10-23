@@ -84,7 +84,8 @@ class sdd(imdb):
         """
         Return the default path where PASCAL VOC is expected to be installed.
         """
-        return os.path.join(cfg.DATA_DIR, 'sdd')
+        return os.path.join(cfg.DATA_DIR, 'sdd_all_from_one')
+        # return os.path.join(cfg.DATA_DIR, 'sdd')
         # return os.path.join(cfg.DATA_DIR, 'sdd_little_of_all')
 
     def gt_roidb(self):
@@ -268,7 +269,7 @@ class sdd(imdb):
         cachedir = os.path.join(self._devkit_path, 'annotations_cache')
         aps = []
         # The PASCAL VOC metric changed in 2010
-        use_07_metric = False
+        use_07_metric = True
         print 'VOC07 metric? ' + ('Yes' if use_07_metric else 'No')
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
