@@ -12,5 +12,5 @@ weight_decay: 0.0005
 # function
 snapshot: 0
 # We still use the snapshot prefix, though
-snapshot_prefix: "all_from_one_vgg16_faster_rcnn_sdd"
+snapshot_prefix: "rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd"
 iter_size: 2
