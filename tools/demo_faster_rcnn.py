@@ -125,8 +125,10 @@ if __name__ == '__main__':
 
     prototxt = os.path.join(cfg.MODELS_DIR, 'VGG16',
                             'faster_rcnn_end2end', 'test.prototxt')
+    # caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
+    #                           '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
     caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
-                              '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
+                                  '/output/faster_rcnn_end2end_sdd/sdd_trainval','all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
 
     if not os.path.isfile(caffemodel):
         raise IOError(('{:s} not found.\n').format(caffemodel))
@@ -147,7 +149,7 @@ if __name__ == '__main__':
         _, _= im_detect(net, im)
 
     # im_names = ['iith_1424_1800.jpg']
-    im_names = ['iith_06_1800.jpg']
+    im_names = ['iith_06_1200.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
 
     for im_name in im_names:
