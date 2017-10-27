@@ -74,6 +74,7 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     plt.axis('off')
     plt.tight_layout()
     plt.draw()
+    plt.savefig('iit_702_'+ class_name +'.png')
 
 def demo(net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
@@ -159,4 +160,3 @@ if __name__ == '__main__':
         demo(net, im_name)
 
     plt.show()
-    plt.savefig('iit_702.png')
