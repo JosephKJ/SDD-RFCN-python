@@ -159,3 +159,4 @@ if __name__ == '__main__':
         demo(net, im_name)
 
     plt.show()
+    plt.savefig('iit_702.png')
