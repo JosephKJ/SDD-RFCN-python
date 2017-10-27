@@ -125,10 +125,10 @@ if __name__ == '__main__':
 
     prototxt = os.path.join(cfg.MODELS_DIR, 'VGG16',
                             'faster_rcnn_end2end', 'test.prototxt')
-    # caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
-    #                           '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
     caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
-                                  '/output/faster_rcnn_end2end_sdd/sdd_trainval','vgg16_faster_rcnn_sdd_iter_30000.caffemodel')
+                              '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
+    # caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
+    #                               '/output/faster_rcnn_end2end_sdd/sdd_trainval','vgg16_faster_rcnn_sdd_iter_30000.caffemodel')
                                   # '/output/faster_rcnn_end2end_sdd/sdd_trainval','all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
 
     if not os.path.isfile(caffemodel):
