@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     args = parse_args()
 
-    prototxt = os.path.join(cfg.MODELS_DIR, 'sdd', 'VGG16',
+    prototxt = os.path.join(cfg.MODELS_DIR, 'VGG16',
                             'faster_rcnn_end2end', 'test.prototxt')
     caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
                               '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
