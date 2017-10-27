@@ -149,7 +149,7 @@ if __name__ == '__main__':
         _, _= im_detect(net, im)
 
     # im_names = ['iith_1424_1800.jpg']
-    im_names = ['iith_06_1200.jpg']
+    im_names = ['iith_06_1800.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
 
     for im_name in im_names:
