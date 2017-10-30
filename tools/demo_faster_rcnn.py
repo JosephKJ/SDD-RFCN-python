@@ -43,7 +43,7 @@ NETS = {'ResNet-101': ('ResNet-101',
                   'resnet101_rfcn_ohem_iter_110000.caffemodel')}
 
 
-def vis_detections(im, class_name, dets, thresh=0.5):
+def vis_detections(im, class_name, dets,image_name, thresh=0.5):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
@@ -74,13 +74,14 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     plt.axis('off')
     plt.tight_layout()
     plt.draw()
-    plt.savefig('iit_702_'+ class_name +'.png')
+    plt.savefig('./img_output/iith_' + image_name + '_' + class_name + '.png')
 
 def demo(net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
     # Load the demo image
-    im_file = os.path.join(cfg.DATA_DIR, 'demo', image_name)
+    im_file = os.path.join('/home/joseph/Dataset/iith_drone_date/orijinal_resolution', image_name)
+    # im_file = os.path.join(cfg.DATA_DIR, 'demo', image_name)
     im = cv2.imread(im_file)
 
     # Detect all object classes and regress object bounds
@@ -102,7 +103,7 @@ def demo(net, image_name):
                           cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
-        vis_detections(im, cls, dets, thresh=CONF_THRESH)
+        vis_detections(im, cls, dets,image_name, thresh=CONF_THRESH)
 
 def parse_args():
     """Parse input arguments."""
@@ -152,7 +153,8 @@ if __name__ == '__main__':
         _, _= im_detect(net, im)
 
     # im_names = ['iith_1424_1800.jpg']
-    im_names = ['iith_06_1800.jpg']
+    im_names = ['iith_06_0.jpg', 'iith_06_250.jpg', 'iith_06_500.jpg', 'iith_06_750.jpg', 'iith_06_1000.jpg',
+    'iith_06_1250.jpg', 'iith_06_1500.jpg', 'iith_06_1750.jpg', 'iith_06_2000.jpg', 'iith_06_2500.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
 
     for im_name in im_names:
