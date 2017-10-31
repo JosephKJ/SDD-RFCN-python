@@ -74,7 +74,7 @@ def vis_detections(im, class_name, dets,image_name, thresh=0.5):
     plt.axis('off')
     plt.tight_layout()
     plt.draw()
-    plt.savefig('./img_output/convo/out_' + image_name + '_' + class_name + '.png')
+    plt.savefig('./img_output/convo/out_' + class_name + '_' + image_name)
 
 def demo(net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
@@ -103,7 +103,7 @@ def demo(net, image_name):
                           cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
-        vis_detections(im, cls, dets,image_name, thresh=CONF_THRESH)
+        vis_detections(im, cls, dets, image_name, thresh=CONF_THRESH)
 
 def parse_args():
     """Parse input arguments."""
