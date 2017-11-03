@@ -1,4 +1,4 @@
-EXP_DIR: faster_rcnn_end2end_sdd
+EXP_DIR: Only_good_GTs_faster_rcnn_end2end_sdd
 TRAIN:
   HAS_RPN: True
   IMS_PER_BATCH: 1
