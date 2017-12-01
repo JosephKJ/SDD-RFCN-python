@@ -77,7 +77,7 @@ class HeatMap:
             print feature_sum
 
         # Visualizing the activations
-        self.vis_square(feat)
+        # self.vis_square(feat)
 
         return feature_sum
 
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     hMap = hm.get_map(img, verbose=False)
-    # hm.display_image(hMap)
+    hm.display_image(hMap)
 
     # for i in range(1, 4):
     #     hMap = hm.get_map(img, verbose=True, layer_name='res3b'+str(i))
