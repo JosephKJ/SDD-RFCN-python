@@ -120,7 +120,7 @@ if __name__ == '__main__':
     image_path = os.path.join('/home/joseph/Dataset/voc_2012/VOCdevkit/VOC2012/JPEGImages/2008_002835.jpg')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    hMap = hm.get_map(img, verbose=True)
+    hMap = hm.get_map(img, verbose=False)
     # hm.display_image(hMap)
 
     # for i in range(1, 4):
