@@ -11,7 +11,7 @@ caffe_root = os.path.join(os.path.dirname(__file__), '..', '..', 'caffe')
 
 
 class HeatMap:
-    def __init__(self, arch='VGG16'):
+    def __init__(self, arch='CaffeNet'):
         # caffe.set_device(5)
         # caffe.set_mode_gpu()
         # caffe.set_mode_cpu()
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     hMap = hm.get_map(img, verbose=True)
-    hm.display_image(hMap)
+    # hm.display_image(hMap)
 
     # for i in range(1, 4):
     #     hMap = hm.get_map(img, verbose=True, layer_name='res3b'+str(i))
