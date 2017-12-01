@@ -66,9 +66,12 @@ class HeatMap:
         threshold = feature_sum.mean()+20
         feature_sum = np.ma.masked_where(feature_sum <= threshold, feature_sum)
 
-        # Scaling the map to the input image size.
-        feature_sum = scipy.misc.imresize(feature_sum, 2.0, interp='bicubic')
+        # # Scaling the map to the input image size.
+        # feature_sum = scipy.misc.imresize(feature_sum, 2.0, interp='bicubic')
+        feature_sum = scipy.misc.imresize(feature_sum, image_shape, interp='bicubic')
         feature_sum = np.ma.masked_where(feature_sum <= threshold, feature_sum)
+
+        # Scaling the map to the input image size.
 
         if verbose:
             print feature_sum
@@ -113,7 +116,7 @@ if __name__ == '__main__':
 
     hm = HeatMap()
 
-    image_path = os.path.join('/home/cs17mtech01001/workspace/SDD-RFCN-python/data/detections/bookstore_video0_9500_hr_bc_pedestrian_2.png')
+    image_path = os.path.join('/home/joseph/Dataset/voc_2012/VOCdevkit/VOC2012/JPEGImages/2008_002835.jpg')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     hMap = hm.get_map(img, verbose=True)
