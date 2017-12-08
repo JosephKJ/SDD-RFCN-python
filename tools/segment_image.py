@@ -23,6 +23,37 @@ CLASSES = ('__background__','pedestrian', 'biker', 'skater', 'car', 'bus', 'cart
 
 NETS = {'SDD': ('ResNet-101','resnet101_rfcn_ohem_iter_110000.caffemodel')}
 
+def vis_detections(im, class_name, dets, thresh=0.5):
+    """Draw detected bounding boxes."""
+    inds = np.where(dets[:, -1] >= thresh)[0]
+    if len(inds) == 0:
+        return
+
+    im = im[:, :, (2, 1, 0)]
+    fig, ax = plt.subplots(figsize=(12, 12))
+    ax.imshow(im, aspect='equal')
+    for i in inds:
+        bbox = dets[i, :4]
+        score = dets[i, -1]
+
+        ax.add_patch(
+            plt.Rectangle((bbox[0], bbox[1]),
+                          bbox[2] - bbox[0],
+                          bbox[3] - bbox[1], fill=False,
+                          edgecolor='red', linewidth=3.5)
+            )
+        ax.text(bbox[0], bbox[1] - 2,
+                '{:s} {:.3f}'.format(class_name, score),
+                bbox=dict(facecolor='blue', alpha=0.5),
+                fontsize=14, color='white')
+
+    ax.set_title(('{} detections with '
+                  'p({} | box) >= {:.1f}').format(class_name, class_name,
+                                                  thresh),
+                  fontsize=14)
+    plt.axis('off')
+    plt.tight_layout()
+    plt.draw()
 
 class Detections:
     def __init__(self, image):
@@ -54,14 +85,14 @@ class Detections:
             bbox = dets[i, :4]
             score = dets[i, -1]
 
-            if show_semantic_info:
-                patch = self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-                semantic_data, iou, obj_score = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
-                # if obj_score > .1 and iou > .2:
-                if obj_score > .2:
-                    self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
-                    self.ious.append(iou)
-                    self.obj_scores.append(obj_score)
+            # if show_semantic_info:
+            #     patch = self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+            #     semantic_data, iou, obj_score = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
+            #     # if obj_score > .1 and iou > .2:
+            #     if obj_score > .2:
+            #         self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
+            #         self.ious.append(iou)
+            #         self.obj_scores.append(obj_score)
 
             if show_detection_info:
                 bgr_img = cv2.cvtColor(self.image, cv2.COLOR_RGB2BGR)
@@ -119,11 +150,13 @@ def get_detections(heat_map_obj, net, image_name):
         detections = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(detections, nms_threshold)
         detections = detections[keep, :]
-        detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=True, show_semantic_info=True)
+        # detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=True, show_semantic_info=True)
+        vis_detections(im, cls, detections)
     timer.toc()
     # print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)
     # detection_object.show_image()
     # print 'Mean IoU:', detection_object.get_mean_iou()
+
     detection_object.save_image('/home/joseph/semantic_det_'+image_name+'.png')
 
 
@@ -188,5 +221,5 @@ if __name__ == '__main__':
     #     img_name = 'bookstore_video0_' + str(i) + '.jpg'
     #     print 'Getting detections of ', img_name
     #     get_detections(hm, net, img_name)
-
+    plt.show()
     print 'Done.'
