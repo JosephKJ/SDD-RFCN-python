@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import scipy
+import matplotlib.gridspec as gridspec
+
 
 import _init_paths
 import caffe
@@ -77,9 +79,60 @@ class HeatMap:
             print feature_sum
 
         # Visualizing the activations
-        # self.vis_square(feat)
+        print feat.shape
+        filtered = []
+        for f in feat:
+            if np.count_nonzero(f) > 120:
+                f = (255 * (f - np.min(f)) / np.ptp(f)).astype(int)
+                print f
+                f = cv2.cvtColor(cv2.applyColorMap(np.uint8(f), cv2.COLORMAP_JET), cv2.COLOR_BGR2RGB)
+                filtered.append(f)
 
+
+        filtered = np.array(filtered)
+        print filtered.shape
+        # self.vis_square(filtered)
+        # self.display_images(filtered)
+        self.save_images(filtered, '/home/joseph/output_grid.png')
         return feature_sum
+
+    def display_images(self, images):
+        plt.figure(figsize=(20, 10))
+        columns = 20
+        for i, image in enumerate(images):
+            plt.subplot(len(images) / columns + 1, columns, i + 1)
+            frame = plt.gca()
+            frame.axes.get_xaxis().set_ticks([])
+            frame.axes.get_yaxis().set_ticks([])
+            plt.imshow(image)
+        plt.show()
+
+    def save_images(self, images, name):
+        plt.figure(figsize=(20, 10))
+        columns = 16
+        for i, image in enumerate(images):
+            plt.subplot(len(images) / columns + 1, columns, i + 1)
+            frame = plt.gca()
+            frame.axes.get_xaxis().set_ticks([])
+            frame.axes.get_yaxis().set_ticks([])
+            plt.imshow(image)
+        plt.savefig(name, bbox_inches='tight')
+
+
+    def save_images_closeby(self, images, name):
+        plt.figure(figsize=(20, 10))
+        columns = 20
+
+        gs = gridspec.GridSpec(len(images) / columns + 1, columns, top=1., bottom=0., right=1., left=0., hspace=0.,
+                               wspace=0.)
+        for i, g in enumerate(gs):
+            ax = plt.subplot(g)
+            ax.imshow(images[0])
+            ax.set_xticks([])
+            ax.set_yticks([])
+        # ax.set_aspect('auto')
+
+        plt.savefig(name, bbox_inches='tight')
 
     def display_image(self, image):
         # plt.axis('off')
@@ -94,12 +147,12 @@ class HeatMap:
            and visualize each (height, width) thing in a grid of size approx. sqrt(n) by sqrt(n)"""
 
         # normalize data for display
-        data = (data - data.min()) / (data.max() - data.min())
+        # data = (data - data.min()) / (data.max() - data.min())
 
         # force the number of filters to be square
         n = int(np.ceil(np.sqrt(data.shape[0])))
         padding = (((0, n ** 2 - data.shape[0]),
-                    (0, 1), (0, 1))  # add some space between filters
+                    (0, 5), (0, 5))  # add some space between filters
                    + ((0, 0),) * (data.ndim - 3))  # don't pad the last dimension (if there is one)
         data = np.pad(data, padding, mode='constant', constant_values=1)  # pad with ones (white)
 
@@ -107,9 +160,12 @@ class HeatMap:
         data = data.reshape((n, n) + data.shape[1:]).transpose((0, 2, 1, 3) + tuple(range(4, data.ndim + 1)))
         data = data.reshape((n * data.shape[1], n * data.shape[3]) + data.shape[4:])
 
+        print data.shape
+
         plt.imshow(data);
         plt.axis('off')
         plt.show()
+
 
 
 if __name__ == '__main__':
@@ -117,11 +173,13 @@ if __name__ == '__main__':
 
     hm = HeatMap()
 
-    image_path = os.path.join('/home/joseph/Dataset/voc_2012/VOCdevkit/VOC2012/JPEGImages/2008_002835.jpg')
+    image_path = os.path.join('/home/joseph/Dataset/voc_2012/VOCdevkit/VOC2012/JPEGImages/2007_004856.jpg')
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     hMap = hm.get_map(img, verbose=False)
-    hm.display_image(hMap)
+
+    # hm.display_image(cv2.cvtColor(cv2.applyColorMap(np.uint8(hMap), cv2.COLORMAP_JET), cv2.COLOR_BGR2RGB))
+    # hm.display_image(hMap)
 
     # for i in range(1, 4):
     #     hMap = hm.get_map(img, verbose=True, layer_name='res3b'+str(i))
