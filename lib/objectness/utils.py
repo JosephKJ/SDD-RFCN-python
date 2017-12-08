@@ -55,7 +55,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     negative_binary_map = temp
 
     # Calculate the IoU
-    iou = findIoU(image, binary_map)
+    iou = 0 # findIoU(image, binary_map)
 
     # Calculate objectness score
     # It is the percentage of pixels that are not black
