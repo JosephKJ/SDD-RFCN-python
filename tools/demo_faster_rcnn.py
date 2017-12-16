@@ -152,7 +152,7 @@ if __name__ == '__main__':
     for i in xrange(2):
         _, _= im_detect(net, im)
 
-    im_names = ['iith_06_1500.jpg']
+    im_names = ['iith_convo_883.jpg']
     # im_names = ['iith_06_100.jpg', 'iith_06_250.jpg', 'iith_06_500.jpg', 'iith_06_750.jpg', 'iith_06_1000.jpg',
     # 'iith_06_1250.jpg', 'iith_06_1500.jpg', 'iith_06_1750.jpg', 'iith_06_2000.jpg', 'iith_06_2500.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
