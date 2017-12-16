@@ -159,7 +159,7 @@ if __name__ == '__main__':
     # 'iith_06_1250.jpg', 'iith_06_1500.jpg', 'iith_06_1750.jpg', 'iith_06_2000.jpg', 'iith_06_2500.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
     # im_names = ['iith_convo_' + str(i) + '.jpg' for i in range(1, 884)]
-    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(1, 1200, 100)]
+    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(1, 1200)]
 
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     for im_name in im_names:
