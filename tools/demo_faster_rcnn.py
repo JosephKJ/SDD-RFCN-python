@@ -103,7 +103,8 @@ def demo(net, image_name):
                           cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
-        vis_detections(im, cls, dets, image_name, thresh=CONF_THRESH)
+        if cls == 'pedestrian':
+            vis_detections(im, cls, dets, image_name, thresh=CONF_THRESH)
 
 def parse_args():
     """Parse input arguments."""
@@ -158,9 +159,9 @@ if __name__ == '__main__':
     # im_names = ['bookstore_video0_12345.jpg']
     # im_names = ['iith_convo_' + str(i) + '.jpg' for i in range(1, 884, 10)]
 
+    print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     for im_name in im_names:
-        print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-        print 'Demo for data/demo/{}'.format(im_name)
+        print 'Demo for {}'.format(im_name)
         demo(net, im_name)
     print 'With enhanced dataset.'
 
