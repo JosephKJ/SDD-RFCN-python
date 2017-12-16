@@ -129,8 +129,8 @@ if __name__ == '__main__':
     prototxt = os.path.join(cfg.MODELS_DIR, 'VGG16',
                             'faster_rcnn_end2end', 'test.prototxt')
     caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
-                              '/output/faster_rcnn_end2end_sdd/sdd_trainval','Enhanced_annotation_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
-    #                          '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
+                              # '/output/faster_rcnn_end2end_sdd/sdd_trainval','Enhanced_annotation_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
+                              '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
     # caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
     #                               '/output/faster_rcnn_end2end_sdd/sdd_trainval','vgg16_faster_rcnn_sdd_iter_30000.caffemodel')
                                   # '/output/faster_rcnn_end2end_sdd/sdd_trainval','all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
@@ -157,7 +157,7 @@ if __name__ == '__main__':
     # im_names = ['iith_06_100.jpg', 'iith_06_250.jpg', 'iith_06_500.jpg', 'iith_06_750.jpg', 'iith_06_1000.jpg',
     # 'iith_06_1250.jpg', 'iith_06_1500.jpg', 'iith_06_1750.jpg', 'iith_06_2000.jpg', 'iith_06_2500.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
-    im_names = ['iith_convo_' + str(i) + '.jpg' for i in range(100, 884)]
+    im_names = ['iith_convo_' + str(i) + '.jpg' for i in range(0, 884)]
 
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     for im_name in im_names:
