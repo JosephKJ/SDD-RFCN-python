@@ -75,8 +75,8 @@ def vis_detections(im, class_name, dets,image_name, thresh=0.5):
     plt.tight_layout()
     plt.draw()
     # plt.savefig('./img_output/ddo_80/out_' + class_name + '_' + image_name, bbox_inches='tight')
-    plt.savefig('./img_output/ddo_80_ee/out_' + class_name + '_' + image_name, bbox_inches='tight')
-    # plt.savefig('./img_output/ddo_80_ee_without_enhancement/out_' + class_name + '_' + image_name, bbox_inches='tight')
+    # plt.savefig('./img_output/ddo_80_ee/out_' + class_name + '_' + image_name, bbox_inches='tight')
+    plt.savefig('./img_output/ddo_80_ee_without_enhancement/out_' + class_name + '_' + image_name, bbox_inches='tight')
 
 def demo(net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
@@ -132,8 +132,8 @@ if __name__ == '__main__':
     prototxt = os.path.join(cfg.MODELS_DIR, 'VGG16',
                             'faster_rcnn_end2end', 'test.prototxt')
     caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
-                              '/output/faster_rcnn_end2end_sdd/sdd_trainval','Enhanced_annotation_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
-                              # '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
+                              # '/output/faster_rcnn_end2end_sdd/sdd_trainval','Enhanced_annotation_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
+                              '/output/faster_rcnn_end2end_sdd/sdd_trainval','rpn_base_size_8_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
     # caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
     #                               '/output/faster_rcnn_end2end_sdd/sdd_trainval','vgg16_faster_rcnn_sdd_iter_30000.caffemodel')
                                   # '/output/faster_rcnn_end2end_sdd/sdd_trainval','all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
@@ -161,7 +161,7 @@ if __name__ == '__main__':
     # 'iith_06_1250.jpg', 'iith_06_1500.jpg', 'iith_06_1750.jpg', 'iith_06_2000.jpg', 'iith_06_2500.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
     # im_names = ['iith_convo_' + str(i) + '.jpg' for i in range(506, 884)]
-    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(240, 1200)]
+    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(195, 1200)]
 
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     for im_name in im_names:
