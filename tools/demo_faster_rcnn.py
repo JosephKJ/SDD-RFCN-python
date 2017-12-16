@@ -67,14 +67,14 @@ def vis_detections(im, class_name, dets,image_name, thresh=0.5):
                 bbox=dict(facecolor='blue', alpha=0.5),
                 fontsize=14, color='white')
 
-    ax.set_title(('{} detections with '
-                  'p({} | box) >= {:.1f}').format(class_name, class_name,
-                                                  thresh),
-                  fontsize=14)
+    # ax.set_title(('{} detections with '
+    #               'p({} | box) >= {:.1f}').format(class_name, class_name,
+    #                                               thresh),
+    #               fontsize=14)
     plt.axis('off')
     plt.tight_layout()
     plt.draw()
-    # plt.savefig('./img_output/convo/out_' + class_name + '_' + image_name)
+    plt.savefig('./img_output/ddo_80/out_' + class_name + '_' + image_name, bbox_inches='tight')
 
 def demo(net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
@@ -164,4 +164,4 @@ if __name__ == '__main__':
         demo(net, im_name)
     print 'With enhanced dataset.'
 
-    plt.show()
+    # plt.show()
