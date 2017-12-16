@@ -74,14 +74,15 @@ def vis_detections(im, class_name, dets,image_name, thresh=0.5):
     plt.axis('off')
     plt.tight_layout()
     plt.draw()
-    plt.savefig('./img_output/ddo_80_ee_without_enhancement/out_' + class_name + '_' + image_name, bbox_inches='tight')
+    plt.savefig('./img_output/ddo_80/out_' + class_name + '_' + image_name, bbox_inches='tight')
+    # plt.savefig('./img_output/ddo_80_ee_without_enhancement/out_' + class_name + '_' + image_name, bbox_inches='tight')
 
 def demo(net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
     # Load the demo image
-    # im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/convocation', image_name)
-    im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/orijinal_resolution', image_name)
+    im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/convocation', image_name)
+    # im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/orijinal_resolution', image_name)
     # im_file = os.path.join(cfg.DATA_DIR, 'demo', image_name)
     im = cv2.imread(im_file)
 
@@ -158,8 +159,8 @@ if __name__ == '__main__':
     # im_names = ['iith_06_100.jpg', 'iith_06_250.jpg', 'iith_06_500.jpg', 'iith_06_750.jpg', 'iith_06_1000.jpg',
     # 'iith_06_1250.jpg', 'iith_06_1500.jpg', 'iith_06_1750.jpg', 'iith_06_2000.jpg', 'iith_06_2500.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
-    # im_names = ['iith_convo_' + str(i) + '.jpg' for i in range(1, 884)]
-    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(1, 1200)]
+    im_names = ['iith_convo_' + str(i) + '.jpg' for i in range(506, 884)]
+    # im_names = ['iith_06_' + str(i) + '.jpg' for i in range(1, 1200)]
 
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     for im_name in im_names:
