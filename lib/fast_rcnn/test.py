@@ -249,8 +249,8 @@ def test_net(net, imdb, max_per_image=400, thresh=-np.inf, vis=False, refine=Fal
 
     det_file = os.path.join(output_dir, 'detections.pkl')
 
-    # if not os.path.exists(det_file):
-    if True: # Forcing recomputation.
+    if not os.path.exists(det_file):
+    # if True: # Forcing recomputation.
         for i in xrange(num_images):
             # filter out any ground truth boxes
             if cfg.TEST.HAS_RPN:
