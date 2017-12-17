@@ -85,7 +85,7 @@ class sdd(imdb):
         Return the default path where PASCAL VOC is expected to be installed.
         """
         return os.path.join(cfg.DATA_DIR, 'sdd_all_from_one')
-        return os.path.join(cfg.DATA_DIR, 'sdd')
+        # return os.path.join(cfg.DATA_DIR, 'sdd')
         # return os.path.join(cfg.DATA_DIR, 'sdd_little_of_all')
 
     def gt_roidb(self):
