@@ -94,7 +94,11 @@ def findIoU(image, preditiction):
 def semantic_segment_image(heatMapObj, image, color='red', use_gradcam=True):
     # Getting the objectness
     binary_map, negative_binary_map, filtered_image, iou, obj_score, heat_map_for_gc = generate_objectness_map(heatMapObj, image)
+
     gc = GC_executor()
+    print image.shape[0]
+    print heat_map_for_gc.shape
+    heat_map_for_gc = scipy.misc.imresize(heat_map_for_gc, image.shape[0], interp='bicubic')
     img, mask = gc.grab_cut_with_patch(np.copy(image), np.copy(heat_map_for_gc))
 
     # Calculating the background
