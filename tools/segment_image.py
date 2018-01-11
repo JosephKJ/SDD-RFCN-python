@@ -85,14 +85,14 @@ class Detections:
             bbox = dets[i, :4]
             score = dets[i, -1]
 
-            # if show_semantic_info:
-            #     patch = self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
-            #     semantic_data, iou, obj_score = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
-            #     # if obj_score > .1 and iou > .2:
-            #     if obj_score > .2:
-            #         self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
-            #         self.ious.append(iou)
-            #         self.obj_scores.append(obj_score)
+            if show_semantic_info:
+                patch = self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
+                semantic_data, iou, obj_score = semantic_segment_image(heat_map_obj, patch, color_label[class_name])
+                # if obj_score > .1 and iou > .2:
+                if obj_score > .2:
+                    self.image[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])] = semantic_data
+                    self.ious.append(iou)
+                    self.obj_scores.append(obj_score)
 
             if show_detection_info:
                 bgr_img = cv2.cvtColor(self.image, cv2.COLOR_RGB2BGR)
@@ -124,7 +124,10 @@ def get_detections(heat_map_obj, net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
     # Load the demo image
-    im_file = os.path.join(cfg.DATA_DIR, 'sdd', 'JPEGImages', image_name)
+    # im_file = os.path.join(cfg.DATA_DIR, 'sdd', 'JPEGImages', image_name)
+    # im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/convocation', image_name)
+    im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/orijinal_resolution', image_name)
+
     im = cv2.imread(im_file)
     image_name = image_name.split('.')[0]
 
@@ -150,13 +153,13 @@ def get_detections(heat_map_obj, net, image_name):
         detections = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(detections, nms_threshold)
         detections = detections[keep, :]
-        # detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=True, show_semantic_info=True)
-        vis_detections(im, cls, detections)
+        detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False, show_semantic_info=True)
+        # vis_detections(im, cls, detections)
     timer.toc()
     # print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)
     # detection_object.show_image()
     # print 'Mean IoU:', detection_object.get_mean_iou()
-
+    detection_object.show_image()
     detection_object.save_image('/home/joseph/semantic_det_'+image_name+'.png')
 
 
@@ -214,9 +217,13 @@ if __name__ == '__main__':
     for i in xrange(2):
         _, _ = im_detect(net, img)
 
-    im_names = ['bookstore_video0_9500.jpg']
+    # im_names = ['bookstore_video0_9500.jpg']
     # im_names = ['nexus_video1_9982.jpg']
     # im_names = ['little_video1_1750.jpg']
+    im_names = ['iith_convo_883.jpg']
+    im_names = ['iith_06_100.jpg']
+
+
     for im_name in im_names:
         print 'Getting detections of {}'.format(im_name)
         get_detections(hm, net, im_name)
