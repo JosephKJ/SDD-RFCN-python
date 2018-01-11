@@ -153,7 +153,7 @@ def get_detections(heat_map_obj, net, image_name):
         detections = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(detections, nms_threshold)
         detections = detections[keep, :]
-        detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False, show_semantic_info=True)
+        detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=True, show_semantic_info=True)
         # vis_detections(im, cls, detections)
     timer.toc()
     # print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)

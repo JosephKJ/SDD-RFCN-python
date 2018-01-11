@@ -8,7 +8,7 @@ from timer import Timer
 from gc_executor import GC_executor
 
 
-def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
+def generate_objectness_map(heatMapObj, image, hr_method='interpolation', use_gradcam=False):
     """
     Generates the objectness confidence score, for a given image.
     :param heatMapObj: An object of the heatmap Class
@@ -17,6 +17,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     :return: binary_map: which contains the objectness info; filtered_image: which is the map applied to the image.
     """
     # 1. Create a Higher Resolution Image
+    img_gc = None
     img = scipy.misc.imresize(image, 8.0, interp='bicubic')
     if hr_method == 'super_resolution':
         # TODO: Super Resolution
@@ -26,37 +27,47 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     timer = Timer()
     timer.tic()
     heat_map = heatMapObj.get_map(img)
+
     # Adding for GC
-    heat_map_for_gc = heat_map.data * ~heat_map.mask
+    if use_gradcam:
+        heat_map_for_gc = heat_map.data * ~heat_map.mask
+        gc = GC_executor()
+        heat_map_for_gc = scipy.misc.imresize(heat_map_for_gc, image.shape[0:2], interp='bicubic')
+        img_gc, binary_map = gc.grab_cut_with_patch(np.copy(image), np.copy(heat_map_for_gc))
+        negative_binary_map = 1 - binary_map
+
+    else:
+        timer.toc()
+        # print 'Heatmap genetation took {:.3f}s '.format(timer.total_time)
+        # print timer.total_time
+        min_pixel_intensity = heat_map.min()
+        binary_map = np.where(heat_map > min_pixel_intensity, 1, 0)
+        negative_binary_map = np.where(heat_map > min_pixel_intensity, 0, 1)
+
+        # Trim off any extra rows in the map
+        map_h, map_w = binary_map.shape
+        img_h, img_w, _ = image.shape
+        if map_h > img_h:
+            diff = map_h - img_h
+            binary_map = np.delete(binary_map, diff, axis=0)  # remove 'diff' rows
+            negative_binary_map = np.delete(negative_binary_map, diff, axis=0)  # remove 'diff' rows
+
+        if map_w > img_w:
+            diff = map_w - img_w
+            binary_map = np.delete(binary_map, diff, axis=1)  # remove 'diff' columns
+            negative_binary_map = np.delete(negative_binary_map, diff, axis=1)  # remove 'diff' columns
+
+        # Remove the border in the detections
+        border = 2
+        temp = np.zeros_like(binary_map)
+        temp[border:-border, border:-border] = binary_map[border:-border, border:-border]
+        binary_map = temp
+        temp = np.ones_like(negative_binary_map)
+        temp[border:-border, border:-border] = negative_binary_map[border:-border, border:-border]
+        negative_binary_map = temp
+
     # Adding for GC ends
-    timer.toc()
-    # print 'Heatmap genetation took {:.3f}s '.format(timer.total_time)
-    # print timer.total_time
-    min_pixel_intensity = heat_map.min()
-    binary_map = np.where(heat_map > min_pixel_intensity, 1, 0)
-    negative_binary_map = np.where(heat_map > min_pixel_intensity, 0, 1)
 
-    # Trim off any extra rows in the map
-    map_h, map_w = binary_map.shape
-    img_h, img_w, _ = image.shape
-    if map_h > img_h:
-        diff = map_h - img_h
-        binary_map = np.delete(binary_map, diff, axis=0)  # remove 'diff' rows
-        negative_binary_map = np.delete(negative_binary_map, diff, axis=0)  # remove 'diff' rows
-
-    if map_w > img_w:
-        diff = map_w - img_w
-        binary_map = np.delete(binary_map, diff, axis=1)  # remove 'diff' columns
-        negative_binary_map = np.delete(negative_binary_map, diff, axis=1)  # remove 'diff' columns
-
-    # Remove the border in the detections
-    border = 2
-    temp = np.zeros_like(binary_map)
-    temp[border:-border, border:-border] = binary_map[border:-border, border:-border]
-    binary_map = temp
-    temp = np.ones_like(negative_binary_map)
-    temp[border:-border, border:-border] = negative_binary_map[border:-border, border:-border]
-    negative_binary_map = temp
 
     # Calculate the IoU
     iou = findIoU(image, binary_map)
@@ -73,7 +84,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     filtered_image = image * three_channel_map
     filtered_image = filtered_image.astype(np.uint8)
 
-    return binary_map, negative_binary_map, filtered_image, iou, obj_score, heat_map_for_gc
+    return binary_map, negative_binary_map, filtered_image, iou, obj_score, img_gc
 
 
 def findIoU(image, preditiction):
@@ -91,15 +102,9 @@ def findIoU(image, preditiction):
     iou = jaccard_similarity_score(gt, mask)
     return iou
 
-def semantic_segment_image(heatMapObj, image, color='red', use_gradcam=True):
+def semantic_segment_image(heatMapObj, image, color='red'):
     # Getting the objectness
-    binary_map, negative_binary_map, filtered_image, iou, obj_score, heat_map_for_gc = generate_objectness_map(heatMapObj, image)
-
-    gc = GC_executor()
-    print image.shape[0]
-    print heat_map_for_gc.shape
-    heat_map_for_gc = scipy.misc.imresize(heat_map_for_gc, image.shape[0], interp='bicubic')
-    img, mask = gc.grab_cut_with_patch(np.copy(image), np.copy(heat_map_for_gc))
+    binary_map, negative_binary_map, filtered_image, iou, obj_score, img_gc = generate_objectness_map(heatMapObj, image)
 
     # Calculating the background
     three_channel_map = np.stack((negative_binary_map, negative_binary_map, negative_binary_map), axis=2)
@@ -111,8 +116,7 @@ def semantic_segment_image(heatMapObj, image, color='red', use_gradcam=True):
 
     # Combined Image
     full_image = background + foreground
-    return img, iou, obj_score
-    # return full_image, iou, obj_score
+    return full_image, iou, obj_score
 
 
 def get_rgb_from_color(color):
