@@ -82,9 +82,9 @@ def demo(net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
     # Load the demo image
-    # im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/convocation', image_name)
+    im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/convocation', image_name)
     # im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/orijinal_resolution', image_name)
-    im_file = os.path.join('/home/joseph/Dataset/youtube', image_name)
+    # im_file = os.path.join('/home/joseph/Dataset/youtube', image_name)
     # im_file = os.path.join(cfg.DATA_DIR, 'demo', image_name)
     im = cv2.imread(im_file)
 
