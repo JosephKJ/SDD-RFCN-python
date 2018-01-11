@@ -5,6 +5,7 @@ import numpy as np
 from map import HeatMap
 from sklearn.metrics import jaccard_similarity_score
 from timer import Timer
+from gc_executor import GC_executor
 
 
 def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
@@ -25,6 +26,9 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     timer = Timer()
     timer.tic()
     heat_map = heatMapObj.get_map(img)
+    # Adding for GC
+    heat_map_for_gc = heat_map.data * ~heat_map.mask
+    # Adding for GC ends
     timer.toc()
     # print 'Heatmap genetation took {:.3f}s '.format(timer.total_time)
     # print timer.total_time
@@ -69,7 +73,7 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation'):
     filtered_image = image * three_channel_map
     filtered_image = filtered_image.astype(np.uint8)
 
-    return binary_map, negative_binary_map, filtered_image, iou, obj_score
+    return binary_map, negative_binary_map, filtered_image, iou, obj_score, heat_map_for_gc
 
 
 def findIoU(image, preditiction):
@@ -87,9 +91,11 @@ def findIoU(image, preditiction):
     iou = jaccard_similarity_score(gt, mask)
     return iou
 
-def semantic_segment_image(heatMapObj, image, color='red'):
+def semantic_segment_image(heatMapObj, image, color='red', use_gradcam=True):
     # Getting the objectness
-    binary_map, negative_binary_map, filtered_image, iou, obj_score = generate_objectness_map(heatMapObj, image)
+    binary_map, negative_binary_map, filtered_image, iou, obj_score, heat_map_for_gc = generate_objectness_map(heatMapObj, image)
+    gc = GC_executor()
+    img, mask = gc.grab_cut_with_patch(np.copy(image), np.copy(heat_map_for_gc))
 
     # Calculating the background
     three_channel_map = np.stack((negative_binary_map, negative_binary_map, negative_binary_map), axis=2)
@@ -101,7 +107,8 @@ def semantic_segment_image(heatMapObj, image, color='red'):
 
     # Combined Image
     full_image = background + foreground
-    return full_image, iou, obj_score
+    return img, iou, obj_score
+    # return full_image, iou, obj_score
 
 
 def get_rgb_from_color(color):

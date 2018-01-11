@@ -36,7 +36,7 @@ class GC_executor:
 
         mask = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
         img = patch * mask[:, :, np.newaxis]
-        return img
+        return img, mask
 
     def grab_cut_without_patch(self, patch):
         bgdModel = np.zeros((1, 65), np.float64)
