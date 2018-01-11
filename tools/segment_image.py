@@ -184,8 +184,14 @@ if __name__ == '__main__':
 
     args = parse_args()
 
-    prototxt = os.path.join(cfg.MODELS_DIR, NETS[args.demo_net][0], 'rfcn_end2end', 'test_agnostic.prototxt')
-    caffemodel = os.path.join(cfg.DATA_DIR, 'rfcn_models', NETS[args.demo_net][1])
+    # prototxt = os.path.join(cfg.MODELS_DIR, NETS[args.demo_net][0], 'rfcn_end2end', 'test_agnostic.prototxt')
+    # caffemodel = os.path.join(cfg.DATA_DIR, 'rfcn_models', NETS[args.demo_net][1])
+
+    prototxt = os.path.join(cfg.MODELS_DIR, 'VGG16',
+                            'faster_rcnn_end2end', 'test.prototxt')
+    caffemodel = os.path.join('/home/joseph/workspace/SDD-RFCN-python'
+                              '/output/faster_rcnn_end2end_sdd/sdd_trainval',
+                              'Enhanced_annotation_all_from_one_vgg16_faster_rcnn_sdd_iter_70000.caffemodel')
 
     if not os.path.isfile(caffemodel):
         raise IOError(('{:s} not found.\n').format(caffemodel))
