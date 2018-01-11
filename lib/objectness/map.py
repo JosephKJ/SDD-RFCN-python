@@ -67,8 +67,8 @@ class HeatMap:
         feature_sum = np.ma.masked_where(feature_sum <= threshold, feature_sum)
 
         # # Scaling the map to the input image size.
-        feature_sum = scipy.misc.imresize(feature_sum, 2.0, interp='bicubic')
-        # feature_sum = scipy.misc.imresize(feature_sum, image_shape, interp='bicubic')
+        # feature_sum = scipy.misc.imresize(feature_sum, 2.0, interp='bicubic')
+        feature_sum = scipy.misc.imresize(feature_sum, image_shape, interp='bicubic')
         feature_sum = np.ma.masked_where(feature_sum <= threshold, feature_sum)
 
         # Scaling the map to the input image size.
