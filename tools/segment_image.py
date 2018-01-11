@@ -159,8 +159,8 @@ def get_detections(heat_map_obj, net, image_name):
     # print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)
     # detection_object.show_image()
     # print 'Mean IoU:', detection_object.get_mean_iou()
-    detection_object.show_image()
-    detection_object.save_image('/home/joseph/semantic_det_'+image_name+'.png')
+    # detection_object.show_image()
+    detection_object.save_image('/home/joseph/drdo/ee_drone/semantic_det_'+image_name+'.png')
 
 
 def parse_args():
@@ -220,8 +220,10 @@ if __name__ == '__main__':
     # im_names = ['bookstore_video0_9500.jpg']
     # im_names = ['nexus_video1_9982.jpg']
     # im_names = ['little_video1_1750.jpg']
-    im_names = ['iith_convo_883.jpg']
-    im_names = ['iith_06_100.jpg']
+    # im_names = ['iith_convo_883.jpg']
+    # im_names = ['iith_06_100.jpg']
+    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(856, 1200)]
+
 
 
     for im_name in im_names:
