@@ -160,7 +160,7 @@ def get_detections(heat_map_obj, net, image_name):
     # detection_object.show_image()
     # print 'Mean IoU:', detection_object.get_mean_iou()
     # detection_object.show_image()
-    detection_object.save_image('/home/joseph/drdo/ee_drone/semantic_det_'+image_name+'.png')
+    detection_object.save_image('/home/joseph/drdo/ee_drone/second/semantic_det_'+image_name+'.jpg')
 
 
 def parse_args():
