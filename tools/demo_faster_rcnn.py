@@ -75,7 +75,7 @@ def vis_detections(im, class_name, dets,image_name, thresh=0.5):
     plt.tight_layout()
     plt.draw()
     # plt.savefig('./img_output/ddo_80/out_' + class_name + '_' + image_name, bbox_inches='tight')
-    plt.savefig('./img_output/ddo_yt/out_' + class_name + '_' + image_name, bbox_inches='tight')
+    # plt.savefig('./img_output/ddo_yt/out_' + class_name + '_' + image_name, bbox_inches='tight')
     # plt.savefig('./img_output/ddo_80_ee_without_enhancement/out_' + class_name + '_' + image_name, bbox_inches='tight')
 
 def demo(net, image_name):
@@ -157,13 +157,13 @@ if __name__ == '__main__':
     for i in xrange(2):
         _, _= im_detect(net, im)
 
-    # im_names = ['iith_convo_883.jpg']
+    im_names = ['iith_convo_883.jpg']
     # im_names = ['iith_06_100.jpg', 'iith_06_250.jpg', 'iith_06_500.jpg', 'iith_06_750.jpg', 'iith_06_1000.jpg',
     # 'iith_06_1250.jpg', 'iith_06_1500.jpg', 'iith_06_1750.jpg', 'iith_06_2000.jpg', 'iith_06_2500.jpg']
     # im_names = ['bookstore_video0_12345.jpg']
     # im_names = ['iith_convo_' + str(i) + '.jpg' for i in range(506, 884)]
     # im_names = ['iith_06_' + str(i) + '.jpg' for i in range(856, 1200)]
-    im_names = ['youtube' + str(i) + '.jpg' for i in range(1, 342)]
+    # im_names = ['youtube' + str(i) + '.jpg' for i in range(1, 342)]
 
     print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     for im_name in im_names:
@@ -171,4 +171,4 @@ if __name__ == '__main__':
         demo(net, im_name)
     print 'With enhanced dataset.'
 
-    # plt.show()
+    plt.show()
