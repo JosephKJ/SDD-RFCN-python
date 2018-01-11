@@ -222,7 +222,8 @@ if __name__ == '__main__':
     # im_names = ['little_video1_1750.jpg']
     # im_names = ['iith_convo_883.jpg']
     # im_names = ['iith_06_100.jpg']
-    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(856, 1200)]
+    # im_names = ['iith_06_' + str(i) + '.jpg' for i in range(856, 1200)]
+    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(1, 856)]
 
 
 
