@@ -146,14 +146,14 @@ def get_detections(heat_map_obj, net, image_name):
     timer.tic()
     detection_object = Detections(im)
     for cls_ind, cls in enumerate(CLASSES[1:]):
-        print 'Plotting ', cls
         cls_ind += 1 # because we skipped background
         cls_boxes = boxes[:, 4:8]
         cls_scores = scores[:, cls_ind]
         detections = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(detections, nms_threshold)
         detections = detections[keep, :]
-        detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=True, show_semantic_info=True)
+        if cls == 'pedestrian':
+            detection_object.plot(heat_map_obj, cls, detections, image_name, thresh=conf_threshold, show_detection_info=False, show_semantic_info=True)
         # vis_detections(im, cls, detections)
     timer.toc()
     # print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)
