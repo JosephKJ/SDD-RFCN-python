@@ -125,8 +125,8 @@ def get_detections(heat_map_obj, net, image_name):
 
     # Load the demo image
     # im_file = os.path.join(cfg.DATA_DIR, 'sdd', 'JPEGImages', image_name)
-    # im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/convocation', image_name)
-    im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/orijinal_resolution', image_name)
+    im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/convocation', image_name)
+    # im_file = os.path.join('/home/joseph/Dataset/iith_drone_data/orijinal_resolution', image_name)
 
     im = cv2.imread(im_file)
     image_name = image_name.split('.')[0]
@@ -159,8 +159,8 @@ def get_detections(heat_map_obj, net, image_name):
     # print 'Instance Segmentation took {:.3f}s '.format(timer.total_time)
     # detection_object.show_image()
     # print 'Mean IoU:', detection_object.get_mean_iou()
-    # detection_object.show_image()
-    detection_object.save_image('/home/joseph/drdo/ee_drone/second/semantic_det_'+image_name+'.jpg')
+    detection_object.show_image()
+    # detection_object.save_image('/home/joseph/drdo/ee_drone/second/semantic_det_'+image_name+'.jpg')
 
 
 def parse_args():
@@ -220,10 +220,10 @@ if __name__ == '__main__':
     # im_names = ['bookstore_video0_9500.jpg']
     # im_names = ['nexus_video1_9982.jpg']
     # im_names = ['little_video1_1750.jpg']
-    # im_names = ['iith_convo_883.jpg']
+    im_names = ['iith_convo_883.jpg']
     # im_names = ['iith_06_100.jpg']
     # im_names = ['iith_06_' + str(i) + '.jpg' for i in range(856, 1200)]
-    im_names = ['iith_06_' + str(i) + '.jpg' for i in range(1, 856)]
+    # im_names = ['iith_06_' + str(i) + '.jpg' for i in range(1, 856)]
 
 
 

@@ -8,7 +8,7 @@ from timer import Timer
 from gc_executor import GC_executor
 
 
-def generate_objectness_map(heatMapObj, image, hr_method='interpolation', use_gradcam=False):
+def generate_objectness_map(heatMapObj, image, hr_method='interpolation', use_gradcam=True):
     """
     Generates the objectness confidence score, for a given image.
     :param heatMapObj: An object of the heatmap Class
@@ -33,7 +33,8 @@ def generate_objectness_map(heatMapObj, image, hr_method='interpolation', use_gr
         heat_map_for_gc = heat_map.data * ~heat_map.mask
         gc = GC_executor()
         heat_map_for_gc = scipy.misc.imresize(heat_map_for_gc, image.shape[0:2], interp='bicubic')
-        img_gc, binary_map = gc.grab_cut_with_patch(np.copy(image), np.copy(heat_map_for_gc))
+        # img_gc, binary_map = gc.grab_cut_with_patch(np.copy(image), np.copy(heat_map_for_gc))
+        img_gc, binary_map = gc.grab_cut_without_patch(np.copy(image))
         negative_binary_map = 1 - binary_map
 
     else:

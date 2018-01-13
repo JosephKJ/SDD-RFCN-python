@@ -49,4 +49,4 @@ class GC_executor:
 
         mask_onlyGC = np.where((mask_onlyGC == 2) | (mask_onlyGC == 0), 0, 1).astype('uint8')
         img = patch * mask_onlyGC[:, :, np.newaxis]
-        return img
+        return img, mask
